@@ -4,7 +4,6 @@
 static final int NUM_LINES = 12;
 static final int TRACE = 200;
 float t = 1;
-int zoom = 10;
 float inc;
 
 void setup() {
@@ -42,7 +41,7 @@ void draw() {
 // coordinates
 
 float x1(float t) {
-  return (mouseY - height/2)*sin(-t/20)/20 - width*cos(t/4)/8 - (mouseY - height/4)/7*cos(t/4);
+  return 200*sin(-t/4) - 100*cos(t/5);
 }
 
 float y1(float t) {
@@ -50,7 +49,7 @@ float y1(float t) {
 }
 
 float x2(float t) {
-  return width/4*cos(t/8) - (mouseY - height/2)/10*sin(t/2);
+  return -300*sin(t/6) + cos(-t/4);
 }
 
 float y2(float t) {
