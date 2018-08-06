@@ -51,7 +51,7 @@ void draw() {
     point(x2(t-i, case2), y2(t-i, case2));
   }
   
-  inc = abs(0.05*(1-pow(2*sin(2*k), 3)));
+  inc = abs(0.02*(1+pow(1.4*sin(k/2), 4)));
   k += 0.02;
   t += inc;
 }
