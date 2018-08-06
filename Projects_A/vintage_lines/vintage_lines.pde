@@ -22,7 +22,6 @@ void setup() {
 void draw() {
   background(20);
   strokeWeight(3);
-  stroke(255);
   translate(width/2, height/2);
   
   // points
@@ -32,11 +31,12 @@ void draw() {
   // case and subCase (within cuadrant)
   case1 = int(float(mouseX)/width * numCases);
   case2 = int(float(mouseY)/height * numCases);
-  subX = (mouseX - (width/numCases)*case1) / float(width/numCases);
-  subY = (mouseY - (height/numCases)*case2) / float(height/numCases);
+  subX = (mouseX - (width/numCases)*case1) / float(width/numCases) * (1-2*(case1%2));
+  subY = (mouseY - (height/numCases)*case2) / float(height/numCases) * (1-2*(case2%2)); 
   
   // lines
   for (float i = 0; i < NUM_LINES*LINE_DIST; i += LINE_DIST) {  
+    stroke(255, 150 + i*30);
     line(x1(t+i, case1), y1(t+i, case1), x2(t+i, case2), y2(t+i, case2));
   }
   
