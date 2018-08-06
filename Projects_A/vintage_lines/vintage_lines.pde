@@ -6,6 +6,7 @@ static final int TRACE = 200;
 static final float LINE_DIST = 0.3;
 static final int numCases = 4;
 float t = 1;
+float k = 0;
 float inc = 0.05;
 static int Z; // zoom factor
 int case1 = 0;
@@ -50,7 +51,8 @@ void draw() {
     point(x2(t-i, case2), y2(t-i, case2));
   }
   
-  inc = 0.04;
+  inc = abs(0.05*(1-pow(2*sin(2*k), 3)));
+  k += 0.02;
   t += inc;
 }
 
