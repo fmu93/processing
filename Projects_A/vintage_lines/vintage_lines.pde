@@ -1,9 +1,9 @@
 // vintage lines
 
 // param
-static final int NUM_LINES = 12;
+static final int NUM_LINES = 15;
 static final int TRACE = 200;
-static final float LINE_DIST = 0.4;
+static final float LINE_DIST = 0.3;
 static final int numCases = 4;
 float t = 1;
 float inc = 0.05;
@@ -36,17 +36,18 @@ void draw() {
   
   // lines
   for (float i = 0; i < NUM_LINES*LINE_DIST; i += LINE_DIST) {  
-    stroke(255, 150 + i*30);
-    line(x1(t+i, case1), y1(t+i, case1), x2(t+i, case2), y2(t+i, case2));
+    stroke(255, 255 - pow(i,2)*20);
+    line(x1(t-i, case1), y1(t-i, case1), x2(t-i, case2), y2(t-i, case2));
   }
   
   // trace
-  strokeWeight(2);
+  strokeWeight(1);
   for (float i = 0; i < TRACE; i++) {
-    stroke(200, 200, 100); // Yellow for curve 1
-    point(x1(t+i, case1), y1(t+i, case1));
-    stroke(100, 220, 100); // green for curve 2
-    point(x2(t+i, case2), y2(t+i, case2));
+    //stroke(200, 200, 100); // Yellow for curve 1
+    stroke(255, 120);
+    point(x1(t-i, case1), y1(t-i, case1));
+    //stroke(100, 220, 100); // green for curve 2
+    point(x2(t-i, case2), y2(t-i, case2));
   }
   
   inc = 0.04;
