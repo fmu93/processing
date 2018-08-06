@@ -2,13 +2,16 @@
 
 // param
 static final int NUM_LINES = 12;
-static final int TRACE = 60;
+static final int TRACE = 200;
 static final float LINE_DIST = 0.4;
+static final int numCases = 4;
 float t = 1;
 float inc = 0.05;
 static int Z; // zoom factor
 int case1 = 0;
 int case2 = 0;
+float subX = 0;
+float subY = 0;
 
 void setup() {
   background(20);
@@ -26,14 +29,14 @@ void draw() {
   //point(x1(t), y1(t));
   //point(x2(t), y2(t));
   
-  // case
-  case1 = int(float(mouseX)/width * 4);
-  case2 = int(float(mouseY)/height * 4);
+  // case and subCase (within cuadrant)
+  case1 = int(float(mouseX)/width * numCases);
+  case2 = int(float(mouseY)/height * numCases);
+  subX = (mouseX - (width/numCases)*case1) / float(width/numCases);
+  subY = (mouseY - (height/numCases)*case2) / float(height/numCases);
+  
   // lines
-  for (float i = 0; i < NUM_LINES*LINE_DIST; i += LINE_DIST) {
-    
-     
-    
+  for (float i = 0; i < NUM_LINES*LINE_DIST; i += LINE_DIST) {  
     line(x1(t+i, case1), y1(t+i, case1), x2(t+i, case2), y2(t+i, case2));
   }
   
@@ -46,7 +49,7 @@ void draw() {
     point(x2(t+i, case2), y2(t+i, case2));
   }
   
-  //inc = 0.5 * (mouseX - width/2)/width;
+  inc = 0.04;
   t += inc;
 }
 
@@ -60,16 +63,16 @@ float x1(float t, int caseNow) {
   float v = 0;
   switch(caseNow) {
     case 0:
-      v = Z*sin(-t/4)+Z/2*cos(t/4);
+      v = (0.5-subX)*Z*sin(-t/4)+Z/2*cos(t/4);
       break;
     case 1: 
-      v = Z/2*cos(-t/2)+Z/2*sin(t);
+      v = Z/2*cos(-t/2)+(0.5-subX)*Z*sin(t);
       break;
     case 2:
-      v = Z/2*cos(-t/4) + Z*sin(t);
+      v = (0.5-subX)*Z/2*cos(-t/4) + Z*sin(t);
       break;
     case 3: 
-      v = Z*cos(+t/4) - Z/4*sin(-t/2);
+      v = (0.5-subX)*Z*cos(+t/4) - Z/4*sin(-t/2);
       break;
   }
   return v;
@@ -79,16 +82,16 @@ float y1(float t, int caseNow) {
   float v = 0;
   switch(caseNow) {
     case 0:
-      v = -Z*cos(-t/2)+Z/4*cos(t/2);
+      v = -Z*cos(-t/2)+(0.5-subY)*Z/4*cos(t/2);
       break;
     case 1: 
-      v = -Z/2*sin(-t)-Z*cos(t/2);
+      v = -Z/2*sin(-t)-(0.5-subY)*Z*cos(t/2);
       break;
     case 2:
-      v = -Z/2*cos(-t/2)-Z/2*sin(-t);
+      v = -(0.5-subY)*Z/2*cos(-t/2)-Z/2*sin(-t);
       break;
     case 3: 
-      v = Z/2*cos(-t/2)-Z*cos(t/2) + Z*sin(t/2);
+      v = (0.5-subY)*Z/2*cos(-t/2)-(0.5-subY)*Z*cos(t/2) + Z*sin(t/2);
       break;
   }
   return v;
@@ -117,7 +120,7 @@ float y2(float t, int caseNow) {
   float v = 0;
   switch(caseNow) {
    case 0:
-     v = 0;
+     v = Z/50*sin(t*2);
      break;
    case 1: 
       v = Z/1.5*sin(t/8) + Z/2*cos(-t/2);
