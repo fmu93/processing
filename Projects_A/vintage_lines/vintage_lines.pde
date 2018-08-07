@@ -14,8 +14,9 @@ int case1 = 0;
 int case2 = 0;
 float subX = 0;
 float subY = 0;
-float myalpha = 0;
-float maxAlpha = 255;
+float myalpha = 255;
+float backFade = 8;
+int lineStroke = 120;
 
 void setup() {
   background(20);
@@ -24,14 +25,11 @@ void setup() {
 }
 
 void draw() {
-  if (backgroundOn) {
-    //background(40, 250);
-    
-  //background(0);
-  fill(0,myalpha);
+  // fading background
+  fill(0, myalpha);
   rect(0,0,width,height);
-  myalpha=(myalpha+1)%maxAlpha;
-  }
+  
+  
   strokeWeight(3);
   translate(width/2, height/2);
   
@@ -55,7 +53,7 @@ void draw() {
   strokeWeight(1);
   for (float i = 0; i < TRACE; i++) {
     //stroke(200, 200, 100); // Yellow for curve 1
-    stroke(255, 120);
+    stroke(255, lineStroke);
     point(x1(t-i, case1), y1(t-i, case1));
     //stroke(100, 220, 100); // green for curve 2
     point(x2(t-i, case2), y2(t-i, case2));
@@ -71,7 +69,14 @@ void draw() {
 // click events
 
 void mouseClicked() {
-  backgroundOn = !backgroundOn;
+  background(0);
+  if (myalpha > backFade) {
+    myalpha = backFade;
+    lineStroke = 20;
+  } else { 
+    myalpha = 255;
+    lineStroke = 120;
+  }
 }
 
 // coordinates
