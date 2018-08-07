@@ -1,11 +1,10 @@
 // vintage lines
 
 // param
-static final int NUM_LINES = 18;
+static final int NUM_LINES = 15;
 static final int TRACE = 200;
 static final float LINE_DIST = 0.3;
 static final int numCases = 4;
-boolean backgroundOn = true;
 float t = 1;
 float k = 0;
 float inc = 0.05;
@@ -14,24 +13,15 @@ int case1 = 0;
 int case2 = 0;
 float subX = 0;
 float subY = 0;
-float myalpha = 0;
-float maxAlpha = 255;
 
 void setup() {
   background(20);
-  size(1000, 800);
-  Z = height/3;
+  size(800, 800);
+  Z = width/3;
 }
 
 void draw() {
-  if (backgroundOn) {
-    //background(40, 250);
-    
-  //background(0);
-  fill(0,myalpha);
-  rect(0,0,width,height);
-  myalpha=(myalpha+1)%maxAlpha;
-  }
+  background(20);
   strokeWeight(3);
   translate(width/2, height/2);
   
@@ -61,18 +51,14 @@ void draw() {
     point(x2(t-i, case2), y2(t-i, case2));
   }
   
-  inc = abs(0.015*(1+pow(1.5*sin(k/2), 4))); // dynamic speed change
+  inc = abs(0.02*(1+pow(1.4*sin(k/2), 4))); // dynamic speed change
   k += 0.02;
   t += inc;
 }
 
-// curve switch
+// curve swuitch
 
-// click events
 
-void mouseClicked() {
-  backgroundOn = !backgroundOn;
-}
 
 // coordinates
 
