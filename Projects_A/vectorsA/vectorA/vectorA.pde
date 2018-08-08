@@ -11,7 +11,7 @@ void setup() {
 
 void draw() {
   background(255);
-  PVector f = new PVector(0, 0.02);
+  PVector gravity = new PVector(0, 0.2);
   
   for (Mover m : movers) {
     if (mousePressed) {
@@ -21,7 +21,7 @@ void draw() {
      m.applyForce(wind);
     }
     
-    m.applyForce(f);
+    m.applyGravity(gravity);
     m.update();
     m.bounceEdges();
     m.display();
