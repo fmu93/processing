@@ -36,18 +36,25 @@ class Mover {
   }
   
   void bounceEdges() {
-    if (loc.x > width - d/2 || loc.x < d/2) {
+    if (loc.x > width - d/2) {
       vel.x = vel.x * -1;
-    }
-    if (loc.y > height - d/2 || loc.y < d/2) {
+      loc.x = width - d/2;
+    } else if (loc.x < d/2) {
+      vel.x = vel.x * -1;
+      loc.x = d/2;
+    } else if (loc.y > height - d/2) {
       vel.y = vel.y * -1;
+      loc.y = height - d/2;
+    }  else if (loc.y < d/2) {
+      vel.y = vel.y * -1;
+      loc.y = d/2;
     }
   }
   
   void display() {
-    stroke(0);
+    stroke(0, 120);
     strokeWeight(2);
-    fill(80);
+    fill(80, 120);
     ellipse(loc.x, loc.y, d, d);
   }
   
