@@ -21,7 +21,6 @@ class Mover {
   
   void update() {
     vel.add(acc);
-    vel.limit(5);
     loc.add(vel);
     acc.mult(0);
   }

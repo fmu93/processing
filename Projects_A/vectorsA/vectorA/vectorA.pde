@@ -1,7 +1,8 @@
 Mover[] movers;
 float gravityCoeff = 0.2;
 float frictionCoeff = 0.05;
-float windCoeff = 0.5;
+float windCoeff = 0.3;
+float dragCoeff = 0.01;
 
 
 void setup() {
@@ -29,12 +30,18 @@ void draw() {
      m.applyForce(wind);
     }
     
+    // air resistance
+    PVector drag = m.vel.copy();
+    drag.normalize();
+    drag.mult(-1 * dragCoeff * m.vel.magSq() * m.mass);
+    m.applyForce(drag);
+    
     // friction
     PVector friction = m.vel.copy();
     friction.normalize();
     float c = -frictionCoeff;
     friction.mult(c);
-    m.applyForce(friction);
+    //m.applyForce(friction);
     
     m.update();
     m.bounceEdges();
