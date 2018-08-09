@@ -44,7 +44,7 @@
   }
   
   void wobble() {
-   acc.add((float) generator.nextGaussian() * random(-w,w), (float) generator.nextGaussian() * random(-w,w));
+   acc.add((float) generator.nextGaussian() * random(w), (float) generator.nextGaussian() * random(w));
   }
   
   void pointer() {

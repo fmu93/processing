@@ -3,7 +3,8 @@ color back = color(0);
 ArrayList<Particle> particles = new ArrayList<Particle>();
 int pixelate = 8;
 boolean pixelateOn = false;
-float forceCoeff = 2;
+float forceCoeff = 2000;
+float frictionCoeff = 1;
 
 void setup() {
   frameRate(60);
@@ -25,8 +26,15 @@ void draw() {
   for (Particle p : particles) {
     // mouse force
      PVector force = PVector.sub(mouse, p.pos);
-     force.setMag(forceCoeff);
+     force.setMag(forceCoeff/force.magSq());
      p.applyForce(force);
+     
+    // friction
+    PVector friction = p.vel.copy();
+    friction.normalize();
+    float c = -frictionCoeff;
+    friction.mult(c);
+    p.applyForce(friction);
     
     
    p.wobble();
@@ -61,10 +69,11 @@ void draw() {
 }
 
 void keyPressed() {
-  pixelateOn = !pixelateOn;
+  //pixelateOn = !pixelateOn;
 }
 
 void mousePressed() {
+  forceCoeff *= -1;
     for (Particle p : particles) {
       p.s = p.s * -1;
     }
