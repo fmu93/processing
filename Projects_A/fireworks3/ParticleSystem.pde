@@ -1,10 +1,9 @@
 class ParticleSystem{
   ArrayList<Particle> particles;
   
-  int n = 50;
   PVector gravity = new PVector(0, 0.02);
   
-  ParticleSystem() {
+  ParticleSystem(int n) {
     particles = new ArrayList<Particle>();
     for(int i = 0; i < n; i++) {
       particles.add(new Particle());

@@ -1,3 +1,8 @@
+import java.util.Random;
+
+Random gen = new Random();
+
+
 class Particle {
   PVector pos;
   PVector vel;
@@ -8,16 +13,18 @@ class Particle {
   float mass = 1;
   float size;
   float explosion = 2;
-  float lifeSpan = 255;
+  float lifeSpan;
   
   Particle() {
     pos = new PVector(mouseX, mouseY);
     vel = new PVector(0, 0);
-    acc = new PVector(random(-explosion, explosion), random(-explosion, explosion));
+    acc = new PVector(((float) gen.nextGaussian()*0.5), ((float) gen.nextGaussian()*0.5));
+    acc.mult(explosion);
     
-    size = 10 + random(10, 20);
-    c = color(255, 100 + 150*random(1), 150);
-    spikes = (int) random(4, 6);
+    c = color(255, 100 + 150*random(1), 150 + random(20, 100));
+    spikes = (int) random(4, 8);
+    lifeSpan = (float) gen.nextGaussian()*20 + 255;
+    size = lifeSpan*0.2;
   }
   
   boolean isDead() {
@@ -34,7 +41,7 @@ class Particle {
   }
   
   void update() {
-    //fade();
+    fade();
     vel.add(acc);
     pos.add(vel);
     acc.mult(0);
@@ -42,7 +49,7 @@ class Particle {
   }
   
   void fade() {
-    size = size - (lifeSpan/255);
+    size = lifeSpan*0.2;
   }
   
   void display() {

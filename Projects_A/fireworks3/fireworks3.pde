@@ -31,10 +31,6 @@ void setup() {
   sound1.amp(1);
 
   systems = new ArrayList<ParticleSystem>();
-
-  //for (int i = 0; i < glitterCount; i++) {
-  //  glitter.add(new Particle(true, gSize, gSpeedRange, gSpikeRange, decay, gravity, gFade));
-  //}
   setKey('1');
 }
 
@@ -42,6 +38,8 @@ void draw() {
   background(0);
   // glitter is what follows the mouse
   
+  
+  // manage explosions
   for(int i = systems.size() - 1; i >= 0; i--) {
     ParticleSystem ps = systems.get(i);
     ps.run();
@@ -112,5 +110,5 @@ void mousePressed() {
 }
 
 void explosion() {
-  systems.add(new ParticleSystem());
+  systems.add(new ParticleSystem(40));
 }
