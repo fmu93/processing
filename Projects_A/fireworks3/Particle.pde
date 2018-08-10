@@ -1,86 +1,71 @@
 class Particle {
+  PVector pos;
+  PVector vel;
+  PVector acc;
   
- color c;
- PVector pos;
- PVector speed;
- float size;
- int spikes;
- float decay;
- float gravity;
- float fade;
- float lifespan = 255;
+  color c;
+  int spikes;
+  float mass = 1;
+  float size;
+  float explosion = 2;
+  float lifeSpan = 255;
   
-  Particle(boolean isGlitter, float radius, float[] speedRange, int[] spikeRange, float newDecay, float newGravity, float newFade) {
-    
-    if (isGlitter) {
-      c = color(random(180, 255), random(50,150), random(50, 150));
-    }else{
-      c = color(random(0, 255), random(0,255), random(0, 255)); 
-    }
-    
-    spikes = int(random(spikeRange[0], spikeRange[1]));
+  Particle() {
     pos = new PVector(mouseX, mouseY);
-    decay = newDecay;
-    gravity = newGravity;
-    size = radius;
-    fade = newFade;
-    speed = PVector.random2D();
-    speed.mult(random(speedRange[0], speedRange[1]));
-  }
-  
-  void flicker() {
-    c = color(random(180, 255), random(50,150), random(50, 150));
+    vel = new PVector(0, 0);
+    acc = new PVector(random(-explosion, explosion), random(-explosion, explosion));
+    
+    size = 10 + random(10, 20);
+    c = color(255, 100 + 150*random(1), 150);
+    spikes = (int) random(4, 6);
   }
   
   boolean isDead() {
-   if (lifespan <= 0) {
-    return true; 
-   } else {
-     return false;
-   }
-  }
-  
-  void doFade() {
-    if (size > 0) {
-      size -= fade*0.5;      
+    if (lifeSpan <= 0) {
+      return true;
+    } else {
+      return false;
     }
   }
   
-  void move() {
-    speed.sub(0, -gravity);
-    if (speed.mag() > 1.0) {
-      speed.mult(decay);
-    }
-    pos.add(speed);
-    lifespan -= 1;
+  void applyForce(PVector force) {
+    PVector f = PVector.div(force, mass);
+    acc.add(f);
   }
   
-  void follow() {
-    pos = new PVector(mouseX, mouseY);
+  void update() {
+    //fade();
+    vel.add(acc);
+    pos.add(vel);
+    acc.mult(0);
+    lifeSpan -= 2;
   }
   
-  
+  void fade() {
+    size = size - (lifeSpan/255);
+  }
   
   void display() {
     noStroke();
-    fill(c, lifespan);
-    star(pos.x, pos.y, size, size/5, spikes);
+    fill(c);
+    star(pos.x, pos.y, size, size/3, spikes);
   }
   
   void star(float x, float y, float radius1, float radius2, int npoints) {
-  float angle = TWO_PI / npoints;
-  float halfAngle = angle/2.0;
-  beginShape();
-  for (float a = 0; a < TWO_PI; a += angle) {
-    float sx = x + cos(a) * radius2;
-    float sy = y + sin(a) * radius2;
-    vertex(sx, sy);
-    sx = x + cos(a+halfAngle) * radius1;
-    sy = y + sin(a+halfAngle) * radius1;
-    vertex(sx, sy);
+    float angle = TWO_PI / npoints;
+    float halfAngle = angle/2.0;
+    beginShape();
+    for (float a = 0; a < TWO_PI; a += angle) {
+      float sx = x + cos(a) * radius2;
+      float sy = y + sin(a) * radius2;
+      vertex(sx, sy);
+      sx = x + cos(a+halfAngle) * radius1;
+      sy = y + sin(a+halfAngle) * radius1;
+      vertex(sx, sy);
+    }
+    endShape(CLOSE);
   }
-  endShape(CLOSE);
-}
+  
   
   
 }

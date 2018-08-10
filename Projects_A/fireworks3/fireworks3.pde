@@ -32,34 +32,24 @@ void setup() {
 
   systems = new ArrayList<ParticleSystem>();
 
-  for (int i = 0; i < glitterCount; i++) {
-    glitter.add(new Particle(true, gSize, gSpeedRange, gSpikeRange, decay, gravity, gFade));
-  }
+  //for (int i = 0; i < glitterCount; i++) {
+  //  glitter.add(new Particle(true, gSize, gSpeedRange, gSpikeRange, decay, gravity, gFade));
+  //}
   setKey('1');
 }
 
 void draw() {
   background(0);
   // glitter is what follows the mouse
-  glitter.set(k, new Particle(true, gSize, gSpeedRange, gSpikeRange, decay, gravity, gFade));
-  k = (k + 1) % glitterCount;
-
-  for (Particle g : glitter) {
-    //g.glitterColor();
-    g.doFade();
-    g.flicker();
-    g.display();
-  }
   
-  for(ParticleSystem ps : systems) {
+  for(int i = systems.size() - 1; i >= 0; i--) {
+    ParticleSystem ps = systems.get(i);
     ps.run();
-    //if (ps.isDead()) {
-    // particles.remove(i);
-    //}
+    if (ps.isDead()) {
+     systems.remove(i);
+    }
   }
 
-
-  
   // display current key
   textSize(32);
   fill(255);
