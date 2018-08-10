@@ -10,7 +10,7 @@
    int size; // what shape?
    float friction = 0.97; 
    float s = 0.05; // strength of pull
-   float w = 0.1; // wobblyness
+   float w = 0.01; // wobblyness
    float RInfluence = height/4; // radius of influence of force
    Random generator = new Random();
 
@@ -36,10 +36,10 @@
   
   void checkCollisionOther(Particle other) {
    PVector distV = PVector.sub(other.pos, pos);
-   if (distV.mag() < (other.size + size)/2) {
+   if (distV.mag() < (other.size + size)) {
      PVector repel = distV.normalize().mult(w);
-     vel.sub(repel);
-     other.vel.add(repel);
+     applyForce(repel);
+     other.applyForce(repel.mult(-1));
    }
   }
   

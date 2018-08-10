@@ -16,17 +16,13 @@ class Mover {
     acc = new PVector(0, 0);
     //mass = ((float) generator.nextGaussian() + 10); // normally -5 to +5
     mass = random(1, 2);
-    d = map(mass, 1, 2, 10, 50);
+    d = map(mass, 1, 2, 10, 30);
   }
   
   void update() {
     vel.add(acc);
     loc.add(vel);
     acc.mult(0);
-  }
-  
-  void applyGravity(PVector gravity) {
-    applyForce(PVector.mult(gravity, mass));
   }
   
   void applyForce(PVector force) {
@@ -44,9 +40,11 @@ class Mover {
     } else if (loc.y > height - d/2) {
       vel.y = vel.y * -1;
       loc.y = height - d/2;
+      //loc.y = d/2;
     }  else if (loc.y < d/2) {
       vel.y = vel.y * -1;
       loc.y = d/2;
+      //loc.y = height - d/2;
     }
   }
   

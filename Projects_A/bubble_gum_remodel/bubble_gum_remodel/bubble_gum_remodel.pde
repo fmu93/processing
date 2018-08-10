@@ -1,10 +1,12 @@
-int n = 420; 
+int n = 100; 
 color back = color(0);
 ArrayList<Particle> particles = new ArrayList<Particle>();
 int pixelate = 8;
 boolean pixelateOn = false;
-float forceCoeff = 2000;
-float frictionCoeff = 1;
+// force coeffitients
+float forceCoeff = 4000;
+float frictionCoeff = 0.01;
+float dragCoeff = 0.01;
 
 void setup() {
   frameRate(60);
@@ -26,16 +28,22 @@ void draw() {
   for (Particle p : particles) {
     // mouse force
      PVector force = PVector.sub(mouse, p.pos);
-     force.setMag(forceCoeff/force.magSq());
-     p.applyForce(force);
+     if (force.mag() > p.size & force.mag() < width/4) {
+       force.setMag(forceCoeff/force.mag());
+       p.applyForce(force);
+     }
      
     // friction
     PVector friction = p.vel.copy();
     friction.normalize();
-    float c = -frictionCoeff;
-    friction.mult(c);
+    friction.mult(-frictionCoeff);
     p.applyForce(friction);
     
+    // drag
+    PVector drag = p.vel.copy();
+    drag.normalize();
+    drag.mult(-1 * dragCoeff * p.vel.magSq() * p.mass);
+    p.applyForce(drag);
     
    p.wobble();
    p.update();
