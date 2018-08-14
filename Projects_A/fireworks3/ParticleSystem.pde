@@ -10,11 +10,17 @@ class ParticleSystem{
     }
   }
   
+  void explosion(Particle p) {
+    PVector ex = new PVector(((float) gen.nextGaussian()*0.5), ((float) gen.nextGaussian()*0.5));
+    p.applyForce(ex);
+  }
+  
   void run() {
    for (int i=particles.size() - 1; i >= 0; i--) {
     Particle p = particles.get(i);
     
     p.applyForce(gravity.mult(p.mass));
+    explosion(p);
     p.update();
     p.display();
     

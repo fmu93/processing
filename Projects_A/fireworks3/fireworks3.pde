@@ -25,7 +25,7 @@ float gFade = 0.4;
 SoundFile sound1;
 
 void setup() {
-  size(1200, 800);
+  size(1600, 1000);
   background(0);
   sound1 = new SoundFile(this, "firework_sound.mp3");
   sound1.amp(1);

@@ -10,7 +10,7 @@ class Particle {
   
   color c;
   int spikes;
-  float mass = 1;
+  float mass;
   float size;
   float explosion = 2;
   float lifeSpan;
@@ -18,13 +18,14 @@ class Particle {
   Particle() {
     pos = new PVector(mouseX, mouseY);
     vel = new PVector(0, 0);
-    acc = new PVector(((float) gen.nextGaussian()*0.5), ((float) gen.nextGaussian()*0.5));
+    acc = new PVector(0, 0);
     acc.mult(explosion);
     
     c = color(255, 100 + 150*random(1), 150 + random(20, 100));
     spikes = (int) random(4, 8);
     lifeSpan = (float) gen.nextGaussian()*20 + 255;
     size = lifeSpan*0.2;
+    mass = size/200;
   }
   
   boolean isDead() {
@@ -50,6 +51,7 @@ class Particle {
   
   void fade() {
     size = lifeSpan*0.2;
+    //mass = size/200; // actually more realistic but small bits fly too fast
   }
   
   void display() {
