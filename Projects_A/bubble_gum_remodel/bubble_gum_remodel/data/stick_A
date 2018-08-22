@@ -1,0 +1,4 @@
+move n click
+xAxis	move on X	3	SLIDER	X Axis	0	1.0	0.0
+yAxis	move on Y	3	SLIDER	Y Axis	0	1.0	0.0
+aBtn	A green button	1	BUTTON	Button 0	0	0.0	0.0

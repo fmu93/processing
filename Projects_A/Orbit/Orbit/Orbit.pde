@@ -3,8 +3,8 @@ color back = color(0);
 Ship ship;
 //ArrayList<Body> planets = new ArrayList<Body>();
 Body[] planets = new Body[2];
-Body planetA;
-Body planetB;
+Planet planetA;
+Planet planetB;
 
 float gravityCoeff = 0.04;
 float thrustCoeff = 0.05;
