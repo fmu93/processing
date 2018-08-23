@@ -1,0 +1,12 @@
+Twisted snake controller
+yAxis	force on Y axis	3	SLIDER	Y Axis	0	1.0	0.0
+xAxis	force on X axis	3	SLIDER	X Axis	0	1.0	0.0
+zAxis	force on Torque	3	SLIDER	Z Axis	0	1.0	0.0
+smaller	decrease R	1	BUTTON	Button 4	0	0.0	0.0
+bigger	increase R	1	BUTTON	Button 5	0	0.0	0.0
+xRot	rotation on X axis	3	SLIDER	X Rotation	0	1.0	0.0
+yRot	rotation on Y axis	3	SLIDER	Y Rotation	0	1.0	0.0
+aBtn	A or green btn	1	BUTTON	Button 0	0	0.0	0.0
+xBtn	X or blue btn	1	BUTTON	Button 2	0	0.0	0.0
+yBtn	Y or yellow btn	1	BUTTON	Button 3	0	0.0	0.0
+bBtn	B or red btn	1	BUTTON	Button 1	0	0.0	0.0
