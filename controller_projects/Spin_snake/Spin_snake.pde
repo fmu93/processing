@@ -15,7 +15,7 @@ float smaller;
 float bigger;
 float aBtn;
 
-boolean backOn = false;
+boolean backOn = true;
 
 void setup() {
   size(1800, 1000);

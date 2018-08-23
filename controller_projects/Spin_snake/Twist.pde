@@ -12,10 +12,10 @@ class Twist extends Body {
   Twist() {
     super();
     R = 80;
-    lifeSpan = 150;
+    lifeSpan = 200;
     relativeAngle = 0;
     path = new PVector(1, 0);
-    c = color(220, 80, 160, 100);
+    c = color(160, 80, 230, lifeSpan);
   }
 
   void update() {
@@ -27,6 +27,7 @@ class Twist extends Body {
     path = PVector.sub(pos, prev);
     R = constrain(R, 1, 200);
     lifeSpan--;
+    c = color(160, 80, 230, lifeSpan);
   }
 
   void friction() {
