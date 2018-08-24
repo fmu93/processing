@@ -9,9 +9,11 @@ class Twist extends Body {
   float angleFrictionCoeff = 0.98;
   boolean dirFollow = false;
 
-  Twist() {
+  Twist(PVector initialPos, float initialAngle, float newR) {
     super();
-    R = 80;
+    pos = initialPos;
+    angle = initialAngle;
+    R = newR;
     lifeSpan = 200;
     relativeAngle = 0;
     path = new PVector(1, 0);
@@ -26,8 +28,6 @@ class Twist extends Body {
     limitSpeed();
     path = PVector.sub(pos, prev);
     R = constrain(R, 1, 200);
-    lifeSpan--;
-    c = color(160, 80, 230, lifeSpan);
   }
 
   void friction() {
@@ -45,9 +45,18 @@ class Twist extends Body {
     strokeWeight(10);
     float angleFollow = angle;
     if (dirFollow) {
-    angleFollow -= path.heading();
+      angleFollow -= path.heading();
     }
-    line(pos.x - R*sin(angleFollow), pos.y - R*cos(angleFollow), pos.x + R*sin(angleFollow), pos.y + R*cos(angleFollow));
+    pushMatrix();
+    translate(pos.x, pos.y);
+    rotate(angleFollow);
+    line(0, -R, 0, R);
+    popMatrix();
+  }
+
+  void fade() {
+    lifeSpan --;
+    c = color(160, 80, 230, lifeSpan);
   }
 
   void walls() {

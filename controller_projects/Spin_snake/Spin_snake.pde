@@ -38,16 +38,16 @@ void draw() {
   blendMode(ADD);
   if (backOn) background(0);
   getUserInput();
-  
-  twistSystem.makeTwist();
-  twistSystem.run(force, torque);
 
-  //// change R
-  //if (bigger == 1) {
-  //  twist.R++;
-  //} else if (smaller == 1) {
-  // twist.R--; 
-  //}
+  // change R
+  float changeR = 0;
+  if (bigger == 1) {
+    changeR = 1;
+  } else if (smaller == 1) {
+    changeR = -1;
+  }
+
+  twistSystem.run(force, torque, changeR);
 
   //twist.applyForce(force);
   //twist.applyTorque(torque*0.02);
