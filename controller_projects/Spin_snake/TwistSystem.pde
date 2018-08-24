@@ -3,7 +3,7 @@ class TwistSystem {
   ArrayList<Twist> followers;
   Twist lead;
   int i = 0;
-  int interval = 2; //  frames between followers
+  int interval = 1; //  frames between followers
 
   TwistSystem() {
     followers = new ArrayList<Twist>();
@@ -11,13 +11,13 @@ class TwistSystem {
   }
 
   void run(PVector force, float torque, float changeR) {
-    if (i%interval == 1) {
-      followers.add(new Twist(lead.pos.copy(), lead.angle - lead.path.heading(), lead.R));
+    if (i%interval == 0) {
+      followers.add(new Twist(lead.pos.copy(), lead.angle, lead.R));
     }
 
     lead.R += changeR;
     lead.applyForce(force);
-    lead.applyTorque(torque*0.02);
+    lead.applyTorque(torque*0.01);
     lead.update();
     lead.walls();
     lead.display();
