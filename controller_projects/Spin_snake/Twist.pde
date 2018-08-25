@@ -4,7 +4,8 @@ class Twist extends Body {
   float lifeSpan;
   float relativeAngle;
   PVector path;
-  color c;
+  color fill;
+  FloatList baseColor;
   float frictionCoeff = 0.985;
   float angleFrictionCoeff = 0.985;
   boolean dirFollow = false;
@@ -14,10 +15,11 @@ class Twist extends Body {
     pos = initialPos;
     angle = initialAngle;
     R = newR;
-    lifeSpan = 400;
+    lifeSpan = 500;
     relativeAngle = 0;
     path = new PVector(1, 0);
-    c = color(160, 80, 230, lifeSpan);
+    baseColor = new FloatList(200, 80, 230);
+    fill = color(baseColor.get(0), baseColor.get(1), baseColor.get(2), lifeSpan/2);
   }
 
   void update() {
@@ -27,7 +29,7 @@ class Twist extends Body {
     friction();
     limitSpeed();
     path = PVector.sub(pos, prev);
-    R = constrain(R, 1, 200);
+    R = constrain(R, 15, 200);
   }
 
   void friction() {
@@ -41,22 +43,37 @@ class Twist extends Body {
   }
 
   void display() {
-    stroke(c);
+    pushStyle();
+    pushMatrix();
+    
+    stroke(fill);
     strokeWeight(10);
     float angleFollow = angle;
     if (dirFollow) {
       angleFollow -= path.heading();
     }
-    pushMatrix();
     translate(pos.x, pos.y);
     rotate(angleFollow);
     line(0, -R, 0, R);
+    
+    popStyle();
     popMatrix();
+  }
+  
+  void colorTransition() {
+    // Red
+    baseColor.sub(0, 0.2);
+    // Green
+    baseColor.mult(1, 1.012);
+    baseColor.sub(1, 1.15);
+    // Blue
+    baseColor.mult(2, 0.99);
+    baseColor.add(1, 0.2);
   }
 
   void fade() {
     lifeSpan --;
-    c = color(160, 80, 230, lifeSpan/2);
+    fill = color(baseColor.get(0), baseColor.get(1), baseColor.get(2), lifeSpan/2);
   }
 
   void walls() {

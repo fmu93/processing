@@ -30,7 +30,8 @@ boolean backOn = true;
 boolean automatic = true;
 
 void setup() {
-  fullScreen(P2D);
+  size(1800, 1000, P2D);
+  //fullScreen(P2D);
   background(0);
 
   // get controller stuff
@@ -57,12 +58,14 @@ void draw() {
     yNoise += incNoise;
 
     torque += map(noise(tNoise), 0, 1, -1, 1);
+    tNoise += incNoise;
 
     sizeDot += map(noise(sNoise), 0, 1, -1, 1);
     sNoise += incNoise*0.1;
     //if (abs(sizeDot) < sizeTol) sizeDot = 0;
   }
 
+  // run system
   twistSystem.run(force, torque, sizeDot);
 }
 
