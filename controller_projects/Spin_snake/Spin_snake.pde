@@ -26,11 +26,14 @@ float yNoise = 2;
 float tNoise = 7;
 float sNoise = 0;
 
+float wallRepelForce = 0.005;
+
 boolean backOn = true;
 boolean automatic = true;
 
 void setup() {
   size(1800, 1000, P2D);
+  frameRate(60);
   //fullScreen(P2D);
   background(0);
 
@@ -51,18 +54,34 @@ void draw() {
   if (backOn) background(0);
   getUserInput();
 
-  // automatic perlin noise forces after no input
+  // automatic perlin noise forces (TODO only after no input)
   if (automatic) {
-    force = force.add(map(noise(xNoise), 0, 1, -1, 1), map(noise(yNoise), 0, 1, -1, 1));
+    // random force
+    force.add(map(noise(xNoise), 0, 1, -0.4, 0.4), map(noise(yNoise), 0, 1, -0.4, 0.4));
     xNoise += incNoise;
     yNoise += incNoise;
+    
+    // repelling force from walls
+    float wallForceX = 0;
+    float xPos = twistSystem.lead.pos.x;
+    if (xPos < width*0.1) wallForceX = (float) Math.pow(wallRepelForce*(width*0.1 - xPos), 2);
+    else if (xPos > width*0.9) wallForceX = (float) -Math.pow(wallRepelForce*(xPos - width*0.9), 2);
+    
+    float wallForceY = 0;
+    float yPos = twistSystem.lead.pos.y;
+    if (yPos < height*0.1) wallForceY = (float) Math.pow(wallRepelForce*(height*0.1 - yPos), 2);
+    else if (yPos > height*0.9) wallForceY = (float) -Math.pow(wallRepelForce*(yPos - height*0.9), 2);
+    
+    force.add(new PVector(wallForceX, wallForceY));
 
-    torque += map(noise(tNoise), 0, 1, -1, 1);
+    // random torque
+    torque += map(noise(tNoise), 0, 1, -0.5, 0.5);
     tNoise += incNoise;
 
-    sizeDot += map(noise(sNoise), 0, 1, -1, 1);
+    //twistSystem.lead.R = map(noise(sNoise), 0, 1, 15, 200); // tweak Radius itselt
+    sizeDot += map(noise(sNoise), 0, 1, -0.3, 0.3); // tweak rate of change of Radius
     sNoise += incNoise*0.1;
-    //if (abs(sizeDot) < sizeTol) sizeDot = 0;
+    if (abs(sizeDot) < sizeTol) sizeDot = 0;
   }
 
   // run system

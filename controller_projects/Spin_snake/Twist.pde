@@ -18,7 +18,7 @@ class Twist extends Body {
     lifeSpan = 500;
     relativeAngle = 0;
     path = new PVector(1, 0);
-    baseColor = new FloatList(200, 80, 230);
+    baseColor = new FloatList(210, 80, 210);
     fill = color(baseColor.get(0), baseColor.get(1), baseColor.get(2), lifeSpan/2);
   }
 
@@ -62,10 +62,10 @@ class Twist extends Body {
   
   void colorTransition() {
     // Red
-    baseColor.sub(0, 0.2);
+    baseColor.sub(0, 0.15);
     // Green
-    baseColor.mult(1, 1.012);
-    baseColor.sub(1, 1.15);
+    baseColor.mult(1, 1.0118);
+    baseColor.sub(1, 1.138);
     // Blue
     baseColor.mult(2, 0.99);
     baseColor.add(1, 0.2);
@@ -73,7 +73,7 @@ class Twist extends Body {
 
   void fade() {
     lifeSpan --;
-    fill = color(baseColor.get(0), baseColor.get(1), baseColor.get(2), lifeSpan/2);
+    fill = color(baseColor.get(0), baseColor.get(1), baseColor.get(2), (float) Math.pow(lifeSpan/1.8, 0.9));
   }
 
   void walls() {

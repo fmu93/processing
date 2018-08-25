@@ -8,7 +8,7 @@ class TwistSystem {
 
   TwistSystem() {
     followers = new ArrayList<Twist>();
-    lead = new Twist(new PVector(width/2, height/2), 0, 80); // constructor needs (PVector pos, float angle, float radius)
+    lead = new Twist(new PVector(width/2, height/2), HALF_PI, 100); // constructor needs (PVector pos, float angle, float radius)
   }
 
   void run(PVector force, float torque, float changeR) {
@@ -19,7 +19,7 @@ class TwistSystem {
     lead.applyForce(force);
     lead.applyTorque(torque*0.01);
     lead.update();
-    lead.walls();
+    //lead.walls();
     lead.display();
 
     for (int i=followers.size() - 1; i >= 0; i--) {
