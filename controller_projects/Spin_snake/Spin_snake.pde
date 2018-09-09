@@ -6,12 +6,12 @@ ControlDevice cont;
 ControlIO control;
 
 Twist twist;
-TwistSystem twistSystem;
-int n = 100;
+ArrayList<TwistSystem> twistSystems = new ArrayList<TwistSystem>();
+int n = 2;
 
-PVector force;
-float torque;
-float sizeDot;
+PVector force = new PVector(0, 0);
+float torque = 0;
+float sizeDot = 0;
 float smaller;
 float bigger;
 float aBtn;
@@ -20,16 +20,9 @@ float forceTol = 0.2;
 float torqueTol = 0.3;
 float sizeTol = 0.3;
 
-float incNoise = 0.04;
-float xNoise = 10;
-float yNoise = 2;
-float tNoise = 7;
-float sNoise = 0;
-
-float wallRepelForce = 0.005;
-
 boolean backOn = true;
 boolean automatic = true;
+boolean controllerOn = false;
 
 void setup() {
   size(1800, 1000, P2D);
@@ -37,55 +30,36 @@ void setup() {
   //fullScreen(P2D);
   background(0);
 
-  // get controller stuff
-  control = ControlIO.getInstance(this);
-  cont = control.getMatchedDevice("snaker");
+  if (controllerOn) {
+    // get controller stuff
+    control = ControlIO.getInstance(this);
+    cont = control.getMatchedDevice("snaker");
 
-  if (cont == null) {
-    println("no controller found!");
-    System.exit(-1);
+    if (cont == null) {
+      println("no controller found!");
+      System.exit(-1);
+    }
+  }  
+  for (int i = 0; i < n; i++) {
+    twistSystems.add(new TwistSystem());
   }
-
-  twistSystem = new TwistSystem();
 }
 
 void draw() {
   blendMode(ADD);
   if (backOn) background(0);
-  getUserInput();
+  if (controllerOn) getUserInput();
 
   // automatic perlin noise forces (TODO only after no input)
-  if (automatic) {
-    // random force
-    force.add(map(noise(xNoise), 0, 1, -0.4, 0.4), map(noise(yNoise), 0, 1, -0.4, 0.4));
-    xNoise += incNoise;
-    yNoise += incNoise;
-    
-    // repelling force from walls
-    float wallForceX = 0;
-    float xPos = twistSystem.lead.pos.x;
-    if (xPos < width*0.1) wallForceX = (float) Math.pow(wallRepelForce*(width*0.1 - xPos), 2);
-    else if (xPos > width*0.9) wallForceX = (float) -Math.pow(wallRepelForce*(xPos - width*0.9), 2);
-    
-    float wallForceY = 0;
-    float yPos = twistSystem.lead.pos.y;
-    if (yPos < height*0.1) wallForceY = (float) Math.pow(wallRepelForce*(height*0.1 - yPos), 2);
-    else if (yPos > height*0.9) wallForceY = (float) -Math.pow(wallRepelForce*(yPos - height*0.9), 2);
-    
-    force.add(new PVector(wallForceX, wallForceY));
+  for (TwistSystem twistSystem : twistSystems) {
+    if (automatic) {
+      twistSystem.randomForce();
+    }
 
-    // random torque
-    torque += map(noise(tNoise), 0, 1, -0.5, 0.5);
-    tNoise += incNoise;
-
-    //twistSystem.lead.R = map(noise(sNoise), 0, 1, 15, 200); // tweak Radius itselt
-    sizeDot += map(noise(sNoise), 0, 1, -0.3, 0.3); // tweak rate of change of Radius
-    sNoise += incNoise*0.1;
-    if (abs(sizeDot) < sizeTol) sizeDot = 0;
+    // run system
+    twistSystem.run(force, torque, sizeDot);
+    twistSystem.wallsRepel();
   }
-
-  // run system
-  twistSystem.run(force, torque, sizeDot);
 }
 
 public void getUserInput() {
