@@ -1,17 +1,23 @@
+import peasy.*;
+
 Tree tree;
-float min_dist = 10;
-float max_dist = 80;
+PeasyCam cam;
+
+float min_dist = 15;
+float max_dist = 70;
 
 void setup() {
-  size(1000, 1000);
+  size(1000, 1000, P3D);
   //frameRate(20);
   tree = new Tree();
-  stroke(255, 150);
+  cam = new PeasyCam(this, 700);
+  
+  stroke(255);
   strokeWeight(2);
 }
 
 void draw() {
-  background(60);
+  background(40);
 
   tree.show();
   tree.grow();

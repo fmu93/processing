@@ -1,14 +1,14 @@
 class Tree { //<>//
   ArrayList<Branch> branches = new ArrayList<Branch>();
   ArrayList<Leaf> leaves = new ArrayList<Leaf>();
-  int nLeaves = 200;
+  int nLeaves = 1500;
 
   Tree() {
     for (int i = 0; i < nLeaves; i++) {
       leaves.add(new Leaf());
     }
 
-    Branch root = new Branch(new PVector(width/2, height), new PVector(0, -1));
+    Branch root = new Branch(new PVector(0, 500), new PVector(0, -1));
     branches.add(root);
     Branch current = new Branch(root);
 
@@ -32,47 +32,53 @@ class Tree { //<>//
   void grow() {
     // iterate thru leaves and branches
     for (Leaf l : leaves) {
+      if (l.reached) continue;
       Branch closest = null;
-      float record = 100000;
+      float record = -1;
+      PVector closestDir = null;
 
       for (Branch b : branches) {
-        float d = PVector.dist(l.pos, b.pos);
+        PVector dir = PVector.sub(l.pos, b.pos);
+        float d = dir.mag();
 
         if (d < min_dist) {
           l.reached = true;
           closest = null;
           break;
-        } else if (d < max_dist && (closest == null || d < record)) {
+        } else if (d > max_dist) {
+        } else if (closest == null || d < record) {
           closest = b;
+          closestDir = dir;
           record = d;
         }
-
-        if (closest != null) {
-          PVector newDir = PVector.sub(l.pos, b.pos);
-          closest.dir.add(newDir);
-          closest.count++;
-        }
+      }
+      
+      if (closest != null) {
+        closestDir.setMag(max_dist/closestDir.mag());
+        closest.dir.add(closestDir);
+        closest.count++;
       }
     }
 
 
 
     // iterate thru leaves and deleate reached ones
-    for (int i = leaves.size() - 1; i >= 0; i--) {
-      if (leaves.get(i).reached) {
-        leaves.remove(i);
-      }
-    }
+    //for (int i = leaves.size() - 1; i >= 0; i--) {
+    //  if (leaves.get(i).reached) {
+    //    leaves.remove(i);
+    //  }
+    //}
 
     // make new branches with direction if their near-leaf count is > 0
     for (int i = branches.size() - 1; i >= 0; i--) {
       Branch b = branches.get(i);
       if (b.count > 0) {
-        b.dir.div(b.count);
-        // direction could be randomized a bit
-        branches.add(b.next());
+        //b.dir.div(b.count);
+        //b.dir.normalize();
+        //b.dir.setMag(5);
+        branches.add(new Branch(b));
+        b.reset();
       }
-      b.reset();
     }
   }
 
@@ -81,7 +87,8 @@ class Tree { //<>//
       leaf.show();
     }
     for (int i = 0; i < branches.size(); i++) {
-      strokeWeight(map(i, 0, branches.size(), 5, 0));
+      float sw = map(i, 0, branches.size(), 8, 1);
+      strokeWeight(sw);
       branches.get(i).show();
     }
   }

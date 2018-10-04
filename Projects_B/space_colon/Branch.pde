@@ -4,7 +4,7 @@ class Branch {
   PVector saveDir;
   Branch parent;
   int count = 0;
-  float len = 10;
+  float len = 5;
 
   Branch(PVector pos0, PVector newDir) {
     pos = pos0.copy();
@@ -14,15 +14,11 @@ class Branch {
 
   Branch(Branch newParent) {
     parent = newParent;
+    parent.dir.add(PVector.random3D().mult(0.3));
+    parent.dir.setMag(len);
     pos = PVector.add(parent.pos, parent.dir);
     dir = parent.dir.copy();
-    saveDir = dir.copy();
-  }
-
-  Branch next() {
-    Branch nextBranch = new Branch(this);
-    nextBranch.dir.mult(len);
-    return nextBranch;
+    saveDir = parent.dir.copy(); //<>//
   }
 
   void reset() {
@@ -32,7 +28,8 @@ class Branch {
 
   void show() {
     if (parent != null) {
-      line(pos.x, pos.y, parent.pos.x, parent.pos.y);
+      stroke(140, 80, 50);
+      line(pos.x, pos.y, pos.z, parent.pos.x, parent.pos.y, parent.pos.z);
     }
   }
 }
