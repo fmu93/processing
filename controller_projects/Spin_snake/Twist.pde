@@ -43,6 +43,8 @@ class Twist extends Body {
   }
 
   void display() {
+    
+    //pos.add(PVector.random2D());
     pushStyle();
     pushMatrix();
     

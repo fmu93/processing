@@ -2,7 +2,7 @@ LSystem lsys;
 Turtle turtle;
 
 void setup() {
-  size(1000, 1000);
+  size(800, 800);
   background(255);
   strokeWeight(1);
   stroke(0);

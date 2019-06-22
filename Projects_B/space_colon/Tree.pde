@@ -87,7 +87,7 @@ class Tree { //<>//
       leaf.show();
     }
     for (int i = 0; i < branches.size(); i++) {
-      float sw = map(i, 0, branches.size(), 8, 1);
+      float sw = map(i, 0, branches.size(), 12, 0);
       strokeWeight(sw);
       branches.get(i).show();
     }

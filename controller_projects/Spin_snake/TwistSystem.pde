@@ -63,11 +63,11 @@ class TwistSystem {
     // random force
     xNoise += incNoise;
     yNoise += incNoise; 
-    lead.applyForce(new PVector(map(noise(xNoise), 0, 1, -0.4, 0.4), map(noise(yNoise), 0, 1, -0.4, 0.4)));
+    lead.applyForce(new PVector(map(noise(xNoise), 0, 1, -autoForce, autoForce), map(noise(yNoise), 0, 1, -autoForce, autoForce)));
 
     // random torque
     tNoise += incNoise;
-    lead.applyTorque(map(noise(tNoise), 0, 1, -0.01, 0.01));
+    lead.applyTorque(map(noise(tNoise), 0, 1, -0.005, 0.005));
 
     // size
     lead.R = map(noise(sNoise), 0, 1, 15, 200); // tweak Radius itselt

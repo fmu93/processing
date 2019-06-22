@@ -3,17 +3,17 @@ import peasy.*;
 Tree tree;
 PeasyCam cam;
 
-float min_dist = 15;
-float max_dist = 70;
+//float min_dist = 30;
+//float max_dist = 80;
+
+float min_dist = 80;
+float max_dist = 150;
 
 void setup() {
-  size(1000, 1000, P3D);
-  //frameRate(20);
+  size(1500, 1000, P3D);
+  frameRate(40);
   tree = new Tree();
-  cam = new PeasyCam(this, 700);
-  
-  stroke(255);
-  strokeWeight(2);
+  cam = new PeasyCam(this, height);
 }
 
 void draw() {
@@ -24,5 +24,5 @@ void draw() {
 }
 
 void mouseClicked() {
- tree = new Tree(); 
+  tree = new Tree();
 }

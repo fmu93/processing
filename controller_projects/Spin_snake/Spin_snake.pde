@@ -22,7 +22,8 @@ float sizeTol = 0.3;
 
 boolean backOn = true;
 boolean automatic = true;
-boolean controllerOn = false;
+float autoForce = 0.2;
+boolean controllerOn = true;
 
 void setup() {
   size(1800, 1000, P2D);

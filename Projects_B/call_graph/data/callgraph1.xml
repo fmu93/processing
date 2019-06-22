@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<callgraph:CallGraph xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:callgraph="http://xsd.silexica.com/callgraph" xsi:schemaLocation="http://xsd.silexica.com/callgraph /home/muro/Downloads/silexica/data/xsd/slxGUICallgraph/CallGraph.xsd">
+  <Thread displayName="T0: main thread" id="_t0" threadId="0"/>
+  <DirectCall file="mandelbrot.c" id="586" line="179" count="4">
+    <caller function="_f216"/>
+    <callee function="_f200"/>
+  </DirectCall>
+  <DirectCall file="mandelbrot.c" id="526" line="164" count="4">
+    <caller function="_f216"/>
+    <callee function="_f205"/>
+  </DirectCall>
+  <DirectCall file="mandelbrot.c" id="412" line="138" count="1">
+    <caller function="_f216"/>
+    <callee function="_f208"/>
+  </DirectCall>
+  <DirectCall file="mandelbrot.c" id="600" line="186" count="1">
+    <caller function="_f216"/>
+    <callee function="_f210"/>
+  </DirectCall>
+  <DirectCall file="mandelbrot.c" id="542" line="170" count="10">
+    <caller function="_f216"/>
+    <callee function="_f213"/>
+  </DirectCall>
+  <DirectCall file="mandelbrot.c" id="597" line="185" count="1">
+    <caller function="_f216"/>
+    <callee function="_f213"/>
+  </DirectCall>
+  <Function file="mandelbrot.c" id="_f200" line="14" name="join">
+    <threads>
+      <thread count="4" thread="_t0"/>
+    </threads>
+    <avgcost>
+      <self cost="228.57 ns" percentage="0.301326"/>
+      <total cost="228.57 ns" percentage="0.301326"/>
+    </avgcost>
+    <costperproctype processorTypeId="0">
+      <cost>
+        <self cost="40.00 ns" percentage="0.233911" precise="39996"/>
+        <total cost="40.00 ns" percentage="0.233911" precise="39996"/>
+      </cost>
+    </costperproctype>
+    <costperproctype processorTypeId="1">
+      <cost>
+        <self cost="260.00 ns" percentage="0.30357" precise="260000"/>
+        <total cost="260.00 ns" percentage="0.30357" precise="260000"/>
+      </cost>
+    </costperproctype>
+  </Function>
+  <Function file="mandelbrot.c" id="_f205" line="21" name="create">
+    <threads>
+      <thread count="4" thread="_t0"/>
+    </threads>
+    <avgcost>
+      <self cost="300.19 ns" percentage="0.395741"/>
+      <total cost="300.19 ns" percentage="0.395741"/>
+    </avgcost>
+    <costperproctype processorTypeId="0">
+      <cost>
+        <self cost="61.33 ns" percentage="0.358668" precise="61328"/>
+        <total cost="61.33 ns" percentage="0.358668" precise="61328"/>
+      </cost>
+    </costperproctype>
+    <costperproctype processorTypeId="1">
+      <cost>
+        <self cost="340.00 ns" percentage="0.396976" precise="340000"/>
+        <total cost="340.00 ns" percentage="0.396976" precise="340000"/>
+      </cost>
+    </costperproctype>
+  </Function>
+  <Function file="mandelbrot.c" id="_f208" line="57" name="allocData">
+    <threads>
+      <thread count="1" thread="_t0"/>
+    </threads>
+    <avgcost>
+      <self cost="35.14 us" percentage="46.3287"/>
+      <total cost="35.14 us" percentage="46.3287"/>
+    </avgcost>
+    <costperproctype processorTypeId="0">
+      <cost>
+        <self cost="5.13 us" percentage="29.9902" precise="5127983"/>
+        <total cost="5.13 us" percentage="29.9902" precise="5127983"/>
+      </cost>
+    </costperproctype>
+    <costperproctype processorTypeId="1">
+      <cost>
+        <self cost="40.15 us" percentage="46.8724" precise="40145000"/>
+        <total cost="40.15 us" percentage="46.8724" precise="40145000"/>
+      </cost>
+    </costperproctype>
+  </Function>
+  <Function file="mandelbrot.c" id="_f210" line="73" name="freeData">
+    <threads>
+      <thread count="1" thread="_t0"/>
+    </threads>
+    <avgcost>
+      <self cost="10.80 us" percentage="14.2361"/>
+      <total cost="10.80 us" percentage="14.2361"/>
+    </avgcost>
+    <costperproctype processorTypeId="0">
+      <cost>
+        <self cost="3.35 us" percentage="19.5996" precise="3351308"/>
+        <total cost="3.35 us" percentage="19.5996" precise="3351308"/>
+      </cost>
+    </costperproctype>
+    <costperproctype processorTypeId="1">
+      <cost>
+        <self cost="12.04 us" percentage="14.0576" precise="12040000"/>
+        <total cost="12.04 us" percentage="14.0576" precise="12040000"/>
+      </cost>
+    </costperproctype>
+  </Function>
+  <Function file="mandelbrot.c" id="_f213" line="93" name="printData">
+    <threads>
+      <thread count="11" thread="_t0"/>
+    </threads>
+    <avgcost>
+      <self cost="20.44 us" percentage="26.94"/>
+      <total cost="20.44 us" percentage="26.94"/>
+    </avgcost>
+    <costperproctype processorTypeId="0">
+      <cost>
+        <self cost="6.26 us" percentage="36.6241" precise="6262300"/>
+        <total cost="6.26 us" percentage="36.6241" precise="6262300"/>
+      </cost>
+    </costperproctype>
+    <costperproctype processorTypeId="1">
+      <cost>
+        <self cost="22.80 us" percentage="26.6178" precise="22797500"/>
+        <total cost="22.80 us" percentage="26.6178" precise="22797500"/>
+      </cost>
+    </costperproctype>
+  </Function>
+  <Function file="mandelbrot.c" id="_f216" line="133" name="main">
+    <threads>
+      <thread count="1" thread="_t0"/>
+    </threads>
+    <avgcost>
+      <self cost="8.95 us" percentage="11.7981"/>
+      <total cost="75.85 us" percentage="100.0"/>
+    </avgcost>
+    <costperproctype processorTypeId="0">
+      <cost>
+        <self cost="2.26 us" percentage="13.1934" precise="2255921"/>
+        <total cost="17.10 us" percentage="100.0" precise="17098836"/>
+      </cost>
+    </costperproctype>
+    <costperproctype processorTypeId="1">
+      <cost>
+        <self cost="10.06 us" percentage="11.7517" precise="10065000"/>
+        <total cost="85.65 us" percentage="100.0" precise="85647500"/>
+      </cost>
+    </costperproctype>
+  </Function>
+  <callThreadId thread="_t0"/>
+</callgraph:CallGraph>
