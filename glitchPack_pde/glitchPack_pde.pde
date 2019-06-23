@@ -87,6 +87,7 @@ void draw() {
     PVector stripVector = PVector.sub(stripEnd, stripStart);
     float stripMag = stripVector.mag();
     int ledsInStrip = (floor(stripMag / ledSize) + 1);
+    println(ledsInStrip);
 
     noFill();
     stroke(0.5);
