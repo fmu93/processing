@@ -12,7 +12,7 @@ public static LetterSystem letterSystem;
 public static PatternSystem patternSystem;
 
 boolean makingLEDs = false;
-boolean editing = false;
+boolean editing = true;
 PVector stripStart;
 PVector stripEnd;
 public static int ledSize = 19;
@@ -22,10 +22,11 @@ public static float signalSaturation = 0.5;
 public static float brightness = 0.5;
 public static float saturation = 1;
 public static  float incFlow = 0.02;
-public static float rateFlow = 0.01;
+public static float rateFlow = 0.005;
 
 int selMode = 0;
 IntList ledsInside;
+float startFrame;
 
 PFont font;
 
@@ -64,7 +65,7 @@ void setup() {
 
 
 void draw() {
-
+  startFrame = millis();
   background(0.1);
 
   //imageMode(CENTER);
@@ -80,15 +81,15 @@ void draw() {
 
   // showing strip to make leds
   if (editing && stripStart != null && stripEnd != null) {
-    stroke(0, 30);
+    stroke(0.5);
     line(stripStart.x, stripStart.y, mouseX, mouseY);    
 
     PVector stripVector = PVector.sub(stripEnd, stripStart);
     float stripMag = stripVector.mag();
-    int ledsInStrip = (floor(stripMag / ledSize) + 1) / 3 * 3;
+    int ledsInStrip = (floor(stripMag / ledSize) + 1);
 
     noFill();
-    stroke(0);
+    stroke(0.5);
     for (int i = 0; i < ledsInStrip; i++) {
       stripVector.setMag(ledSize*(0.01+ i));
       ellipse(stripStart.x + stripVector.x, stripStart.y + stripVector.y, ledSize, ledSize);
@@ -108,8 +109,11 @@ void draw() {
   //signalDelay = map(cp5.get(Slider.class, "v1").getValue(), 0, 100, 0, 1000);
 
   // show all color mods
-  if (editing) ledSystem.show2();
-  myClient.write(ledSystem.toSocket());
+  if (editing) {
+    ledSystem.show2();
+  } else {
+    myClient.write(ledSystem.toSocket());
+  }
 
   // display number of LEDS
   //fill(0);
@@ -118,6 +122,8 @@ void draw() {
   text(ledSystem.ledCount(), 10, 10);
   text(frameRate, 50, 10);
   text("selMode: " + selMode, 110, 10);
+  float processTime = millis() - startFrame;
+  text("millis/f: " + processTime, 250, 10);
   //noLoop();
   //if (mousePressed) {
   //  loop();
@@ -130,7 +136,8 @@ void init() {
   ledSystem = new LedSystem();
   letterSystem = new LetterSystem();
   patternSystem = new PatternSystem();
-  loadSelected(new File("/home/pi/Desktop/pipack/glitchPack_pde/stripStoned.txt"));
+  //loadSelected(new File("/home/pi/Desktop/pipack/glitchPack_pde/stripStoned.txt"));
+  //loadSelected(new File("D:/Libraries/Documents/GitHub/processing/glitchPack_pde/stripStoned.txt"));
 }
 
 void updateVariable(float val) {
@@ -192,7 +199,7 @@ void mouseReleased() {
   if (stripStart != null && stripEnd != null) {
     PVector stripVector = PVector.sub(stripEnd, stripStart);
     float stripMag = stripVector.mag();
-    int ledsInStrip = (floor(stripMag / ledSize) + 1) / 3 * 3;
+    int ledsInStrip = (floor(stripMag / ledSize) + 1);
 
     noFill();
     stroke(0);

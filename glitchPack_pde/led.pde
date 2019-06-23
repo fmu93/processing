@@ -61,7 +61,7 @@ class Led {
   }
   
   String getHSB() {
-    return hue(c) + "," + saturation(c) + "," + brightness(c);
+    return String.format("%.3f", hue(c)) + "," + String.format("%.3f", saturation(c)) + "," + String.format("%.3f", brightness(c));
   }
   
   String getRGB() {

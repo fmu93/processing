@@ -7,9 +7,9 @@ class PatternSystem {
   int cols;
   int rows;
   float zoff = random(100);
-  float incSpread = 0.001;
+  float incSpread = 0.0002;
   boolean debug = false;
-  float[] colorSpread = {0.2, 1};  //[center, range/2]
+  float[] colorSpread = {0, 1.9};  //[center, range/2]
 
   PatternSystem() {
     particles = new ArrayList<Particle>();
@@ -23,10 +23,11 @@ class PatternSystem {
     //colorSpread[0] = map(mouseX, 0, width, 0, TWO_PI);
     //colorSpread[1] = map(mouseY, 0, height, 0, 8);
 
-    colorSpread[0] = (colorSpread[0] + 0.002) % 1.0;
+    colorSpread[0] = (colorSpread[0] + 0.0002) % 1.0;
     colorSpread[1] = (colorSpread[1] + incSpread);
     //colorSpread[1] = map(mouseY, 0, height, 0,4*PI);
     if (colorSpread[1] < 0 || colorSpread[1] > 2) incSpread = incSpread*-1;
+    
   }
 
   float updateLookup(PVector _pos) {
