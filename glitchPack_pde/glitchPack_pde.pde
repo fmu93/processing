@@ -192,7 +192,7 @@ void init() {
 void updateVariable(float val) {
   switch(selMode) { // TODO same snapshot of all variables in modes class
   case 0:
-    if ((brightness >= 0 || val > 0) && (brightness <= 0.8 || val < 0)) brightness += val*(1 + 50*pow(brightness, 3))/500; // TODo deal with gama correction
+    if ((brightness >= 0 || val > 0) && (brightness <= 1 || val < 0)) brightness += val/100; // TODo deal with gama correction
     break;
   case 1:
     if ((signalDelay >= 0 || val > 0) && (signalDelay <= 2000 || val < 0)) signalDelay += val*6;

@@ -54,7 +54,7 @@ class LedSystem { //<>//
     float now = millis()/100;
     while (itr1.hasNext()) {
       Map.Entry<Integer, Led> entry = itr1.next();
-      entry.getValue().setColor(color(((entry.getKey()+millis()/20.0)/300.0) % 1.0, 1, brightness*pow(map((entry.getKey() +now) % 8, 0, 7, 1, 0.1), 2)));
+      entry.getValue().setColor(color(((entry.getKey()+millis()/20.0)/300.0) % 1.0, 1, brightness*map((entry.getKey() +now) % 8, 0, 7, 1, 0.1)));
     }
   }
 
@@ -151,7 +151,7 @@ class LedSystem { //<>//
         //bri += 0.7;
         //bri = brightness*(1-shadowFlowFactor*pow(bri, 3)); // somehow brightness doesn't look linear in the LEDs
         bri = map(bri, briStart, cutoff, 0, 1);
-        bri = pow(bri, 3)*brightness;
+        bri = pow(bri, 1.5)*brightness;
       } else {
         //bri = map(bri, 0, 1, 0, brightness);
         bri = brightness;
