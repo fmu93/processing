@@ -25,60 +25,56 @@ class LedSystem { //<>//
   //}
 
   void show2() {
-    Iterator iterator = ledMap.keySet().iterator();
-    while (iterator.hasNext()) {
-      int id = (int) iterator.next();
-      ledMap.get(id).show();
+    Iterator<Map.Entry<Integer, Led>> itr1 = ledMap.entrySet().iterator();
+    while (itr1.hasNext())
+    {
+      Map.Entry<Integer, Led> entry = itr1.next();
+      //entry.getKey();
+      entry.getValue().show();
     }
   }
 
   String toSocket() {
     String toReturn = ">" + ledMap.size() + "\n";
     //colorMode(RGB, 1.0);
-    Iterator iterator = ledMap.keySet().iterator();
-    while (iterator.hasNext()) {
-      //for (int id : ledMap.valueSet()) {
-      int id = (int) iterator.next();
 
-      Led led = ledMap.get(id); 
-      toReturn += id + "," +led.getHSB() + "\n"; // id,red,green,blue
+    Iterator<Map.Entry<Integer, Led>> itr1 = ledMap.entrySet().iterator();
+    while (itr1.hasNext()) {
+      Map.Entry<Integer, Led> entry = itr1.next();
+      toReturn += entry.getKey() + "," + entry.getValue().getHSB() + "\n"; // id,red,green,blue
     }
 
     toReturn += "< end <";
-    //colorMode(HSB, 1.0);
 
     return toReturn;
   }
 
   void rainbow() {
-    Iterator iterator = ledMap.keySet().iterator();
-    while (iterator.hasNext()) {
-      //for (int id : ledMap.valueSet()) {
-      int id = (int) iterator.next();
-      Led led = ledMap.get(id); 
-      led.setColor(color(((id+millis()/1500)/60.0) % 1.0, 1, 1));
+    Iterator<Map.Entry<Integer, Led>> itr1 = ledMap.entrySet().iterator();
+    float now = millis()/100;
+    while (itr1.hasNext()) {
+      Map.Entry<Integer, Led> entry = itr1.next();
+      entry.getValue().setColor(color(((entry.getKey()+millis()/20.0)/300.0) % 1.0, 1, brightness*pow(map((entry.getKey() +now) % 8, 0, 7, 1, 0.1), 2)));
     }
   }
 
   void show() {    
     Led prev = null;
     //intList set = ledMap.keySet();
-    Iterator iterator = ledMap.keySet().iterator();
-    while (iterator.hasNext()) {
-      //for (int id : ledMap.valueSet()) {
-      int id = (int) iterator.next();
 
-      Led led = ledMap.get(id); 
-      if (ledsToSignal.contains(led)) {
-        led.signal();
-      }
+    Iterator<Map.Entry<Integer, Led>> itr1 = ledMap.entrySet().iterator();
+    while (itr1.hasNext()) {
+      Map.Entry<Integer, Led> entry = itr1.next();
+      //entry.getKey();
+      entry.getValue().signal();
+
       // line between them
       strokeWeight(2);
       if (prev != null) {
-        line(prev.pos.x, prev.pos.y, led.pos.x, led.pos.y);
+        line(prev.pos.x, prev.pos.y, entry.getValue().pos.x, entry.getValue().pos.y);
       }
-      led.show();
-      prev = led;
+      entry.getValue().show();
+      prev = entry.getValue();
     }
     ledsToSignal.clear();
   }
@@ -105,20 +101,31 @@ class LedSystem { //<>//
   }
 
   void addLed(PVector pos_) {
-    ledMap.put(ledMap.size()+1, new Led(pos_, ledMap.size()+1));
-    println(ledMap.size());
+    int last = -1;
+
+    Iterator<Map.Entry<Integer, Led>> itr1 = ledMap.entrySet().iterator();
+    while (itr1.hasNext()) {
+      Map.Entry<Integer, Led> entry = itr1.next();
+      // the next LED id is skipping
+      if (entry.getKey() != last+1) {
+        break;
+      }
+
+      last = entry.getKey();
+    }
+
+    ledMap.put(last+1, new Led(pos_, last+1));
   }
 
   IntList isInside(PVector point, float radius) { 
     IntList idsToReturn = new IntList();
-    Iterator iterator = ledMap.keySet().iterator();
-    while (iterator.hasNext()) {
-      //for (int id : ledMap.valueSet()) {
-      int id = (int) iterator.next();
-      Led led = ledMap.get(id); 
 
-      if (PVector.sub(led.pos, point).mag() < led.size/2 + radius) {
-        idsToReturn.append(id);
+    Iterator<Map.Entry<Integer, Led>> itr1 = ledMap.entrySet().iterator();
+    while (itr1.hasNext()) {
+      Map.Entry<Integer, Led> entry = itr1.next();
+
+      if (PVector.sub(entry.getValue().pos, point).mag() < entry.getValue().size/2 + radius) {
+        idsToReturn.append(entry.getKey());
       }
     }
     return idsToReturn;
@@ -126,22 +133,32 @@ class LedSystem { //<>//
 
   void updateFlowField() {
 
-    Iterator iterator = ledMap.keySet().iterator();
-    while (iterator.hasNext()) {
-      //for (int id : ledMap.valueSet()) {
-      int id = (int) iterator.next();
-      Led led = ledMap.get(id);
+    Iterator<Map.Entry<Integer, Led>> itr1 = ledMap.entrySet().iterator();
+    while (itr1.hasNext()) {
+      Map.Entry<Integer, Led> entry = itr1.next();
 
-      float hue = patternSystem.updateLookup(led.pos);
+      float hue = patternSystem.updateLookup(entry.getValue().pos);
+      float bri = patternSystem.brightnessLookup(entry.getValue().pos);
+      
+      
+      // shadowFactor = [0-1] -> briStart = [0, 0.5], cutoff = [0, 0.8];
+      
 
-      color c = color(hue, saturation, brightness);
+      float briStart = map(shadowFlowFactor, 0, 1, 0, 0.5);
+      float cutoff = map(shadowFlowFactor, 0, 1, briStart, 0.8);
 
-      led.setColor(c);
+      if (bri < cutoff) { // TODO balance algorithim 
+        //bri += 0.7;
+        //bri = brightness*(1-shadowFlowFactor*pow(bri, 3)); // somehow brightness doesn't look linear in the LEDs
+        bri = map(bri, briStart, cutoff, 0, 1);
+        bri = pow(bri, 3)*brightness;
+      } else {
+        //bri = map(bri, 0, 1, 0, brightness);
+        bri = brightness;
+      }
+      color c = color(hue, saturation, bri);
+      entry.getValue().setColor(c);
     }
-
-    if (ledMap.get(0) != null) println(ledMap.get(0).c);
-    patternSystem.updateZ();
-    patternSystem.evolveSpread();
   }
 
   IntList isInside(PVector point) {
@@ -160,24 +177,32 @@ class LedSystem { //<>//
 
   IntList getSelectedIds() {
     IntList toReturn = new IntList();
-    Iterator iterator = ledMap.keySet().iterator();
-    while (iterator.hasNext()) {
-      //for (int id : ledMap.valueSet()) {
-      int id = (int) iterator.next();
-      Led led = ledMap.get(id);
-      if (led.isSelected)
-        toReturn.append(id);
+
+    Iterator<Map.Entry<Integer, Led>> itr1 = ledMap.entrySet().iterator();
+    while (itr1.hasNext()) {
+      Map.Entry<Integer, Led> entry = itr1.next();
+
+      if (entry.getValue().isSelected)
+        toReturn.append(entry.getKey());
     }
     return toReturn;
   }
 
   void clearSelection() {
-    Iterator iterator = ledMap.keySet().iterator();
-    while (iterator.hasNext()) {
-      //for (int id : ledMap.valueSet()) {
-      int id = (int) iterator.next();
-      Led led = ledMap.get(id);
-      led.unSelect();
+    Iterator<Map.Entry<Integer, Led>> itr1 = ledMap.entrySet().iterator();
+    while (itr1.hasNext()) {
+      Map.Entry<Integer, Led> entry = itr1.next();
+
+      entry.getValue().unSelect();
+    }
+  }
+
+  void clearColors() {
+    Iterator<Map.Entry<Integer, Led>> itr1 = ledMap.entrySet().iterator();
+    while (itr1.hasNext()) {
+      Map.Entry<Integer, Led> entry = itr1.next();
+
+      entry.getValue().setColor(color(0));
     }
   }
 
@@ -190,12 +215,12 @@ class LedSystem { //<>//
 
 
   void removeLed(Led led) {
-    Iterator iterator = ledMap.keySet().iterator();
-    while (iterator.hasNext()) {
-      //for (int id : ledMap.valueSet()) {
-      int id = (int) iterator.next();
-      if (led == ledMap.get(id)) {
-        ledMap.remove(id);
+    Iterator<Map.Entry<Integer, Led>> itr1 = ledMap.entrySet().iterator();
+    while (itr1.hasNext()) {
+      Map.Entry<Integer, Led> entry = itr1.next();
+
+      if (led == entry.getValue()) {
+        ledMap.remove(entry.getKey());
         break;
       }
     }
@@ -207,11 +232,11 @@ class LedSystem { //<>//
 
   StringList stringList() {
     StringList toPrint = new StringList();
-    Iterator iterator = ledMap.keySet().iterator();
-    while (iterator.hasNext()) {
-      //for (int id : ledMap.valueSet()) {
-      int id = (int) iterator.next();
-      toPrint.append( "ID:" + id  + "," + ledMap.get(id).pos.x + "," + ledMap.get(id).pos.y);
+    Iterator<Map.Entry<Integer, Led>> itr1 = ledMap.entrySet().iterator();
+    while (itr1.hasNext()) {
+      Map.Entry<Integer, Led> entry = itr1.next();
+
+      toPrint.append( "ID:" + entry.getKey()  + "," + entry.getValue().pos.x + "," + entry.getValue().pos.y);
     }
     return toPrint;
   }

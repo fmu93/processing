@@ -12,19 +12,30 @@ public static LetterSystem letterSystem;
 public static PatternSystem patternSystem;
 
 boolean makingLEDs = false;
-boolean editing = true;
+static boolean editing = false;
+boolean lettersOn = !editing;
+boolean flowOn = true;
 PVector stripStart;
 PVector stripEnd;
-public static int ledSize = 19;
+String inputBuffer = "";
+char lastKey = 'a';
+int[] selModeLeds = {104, 272, 271, 270, 269, 268, 267, 266, 265};
+
+public static int ledSize = 20;
 public static float signalDelay = 800;
-public static float fadeDelay = 0.4;
-public static float signalSaturation = 0.5;
-public static float brightness = 0.5;
+public static float fadeDelay = 1;
+public static float signalSaturation = 0.2;
+public static float brightness = editing?1:0.2;
 public static float saturation = 1;
-public static  float incFlow = 0.02;
-public static float rateFlow = 0.005;
+public static  float incFlow = 0.07;
+public static float rateFlow = 0.06;
+public static  float incFlow2 = 0.1;
+public static float rateFlow2 = 0.08;
+public static float shadowFlowFactor = 0.7;
+public static float showSelModeDelay = 3000;
 
 int selMode = 0;
+float lastShowSelMode = millis();
 IntList ledsInside;
 float startFrame;
 
@@ -43,11 +54,23 @@ int port = 8080;
  LED strip has 60 led/m, 5 total meters = 300 LEDs
  LEDs in a strip are 1.66 cm away
  
+ // LEDs covered by others
+ 41, 53, 69, 88, 238
+ 
+ // qualitative brightness (in my room with some natural light)
+ super bright = 0.8
+ very bright = 0.5
+ bright = 0.15
+ modest = 0.05
+ dim = 0.025
+ minimum = 0.008
  
  **/
 
 void setup() {
-  size(700, 900);
+  size(100, 100);
+  frameRate(20);
+
   colorMode(HSB, 1.0);
   imageMode(CENTER);
   textAlign(CENTER, CENTER);
@@ -55,29 +78,25 @@ void setup() {
   myClient = new Client(this, "127.0.0.1", port);
   //myClient.write("Trying connection!");
 
-  //canvas = createGraphics(600, 807, JAVA2D);
-  font = createFont("arial", 12);
-  gui();
 
-  //img = loadImage("res/vest.jpg");
+  if (editing) {
+    font = createFont("arial", 12);
+    gui();
+    img = loadImage("res/vest2.jpg");
+  }
   init();
 }
 
 
 void draw() {
+
   startFrame = millis();
   background(0.1);
 
-  //imageMode(CENTER);
-  //image(img, width/2, height/2, width*0.95, height);
-  //showGrid();
-
-
-  //ledSystem.show();
-
-  //Led ledToSignal = ledSystem.isInside(particles.get(0).pos);
-
-  //ledSystem.signal(ledSystem.isInside(new PVector(mouseX, mouseY))); 
+  if (editing) {
+    //image(img, width/2, height/2, width*0.95, height);
+    //showGrid();
+  }
 
   // showing strip to make leds
   if (editing && stripStart != null && stripEnd != null) {
@@ -87,6 +106,7 @@ void draw() {
     PVector stripVector = PVector.sub(stripEnd, stripStart);
     float stripMag = stripVector.mag();
     int ledsInStrip = (floor(stripMag / ledSize) + 1);
+    println(ledsInStrip);
 
     noFill();
     stroke(0.5);
@@ -96,24 +116,38 @@ void draw() {
     }
   }
 
-  // pattern test 1
-  //patternSystem.updateFlowField();
-  //patternSystem.showFlowField();
+  if (flowOn) {
+    ledSystem.updateFlowField();
+  } else {
+    ledSystem.clearColors();
+  }
+  patternSystem.updateZ();
+  patternSystem.evolveSpread();
 
-  //patternSystem.matrix();
-  ledSystem.updateFlowField();
   //ledSystem.rainbow();
 
-  // poem test 1
   letterSystem.showQueue();
   //signalDelay = map(cp5.get(Slider.class, "v1").getValue(), 0, 100, 0, 1000);
+  if (millis() - lastShowSelMode < showSelModeDelay) {
+    showSelMode();
+  }
 
+  if (keyPressed && key == CODED) {
+    showSelMode();
+    lastShowSelMode = millis();
+  } else if (keyPressed && key == ' ') {
+    ledSystem.rainbow();
+  } else {
+  }
   // show all color mods
   if (editing) {
     ledSystem.show2();
   } else {
+
+    //ledSystem.show2();
     myClient.write(ledSystem.toSocket());
   }
+
 
   // display number of LEDS
   //fill(0);
@@ -133,26 +167,52 @@ void draw() {
 }
 
 void init() {
+  // TODO load python socket script from here
+  /**
+  File pythonSocket = new File("/home/pi/Desktop/runLedPack1.sh");
+  try {
+  Runtime.getRuntime().exec(new String[]{"/bin/sh" ,"-c", pythonSocket.getPath()});
+  } catch (Exception e) {
+   println(e); 
+  }
+  //wait(20);
+  **/
+  
   ledSystem = new LedSystem();
   letterSystem = new LetterSystem();
   patternSystem = new PatternSystem();
-  //loadSelected(new File("/home/pi/Desktop/pipack/glitchPack_pde/stripStoned.txt"));
-  //loadSelected(new File("D:/Libraries/Documents/GitHub/processing/glitchPack_pde/stripStoned.txt"));
+  if (!editing) {
+    loadSelected(new File("/home/pi/Desktop/glitchPack_pde/zug.txt"));
+  } else {
+    loadSelected(new File("D:/Libraries/Documents/GitHub/processing/glitchPack_pde/zug.txt"));
+  }
 }
 
 void updateVariable(float val) {
-  switch(selMode) {
+  switch(selMode) { // TODO same snapshot of all variables in modes class
   case 0:
-    if ((brightness >= 0 || val > 0) && (brightness <= 1 || val < 0)) brightness += val/100;
+    if ((brightness >= 0 || val > 0) && (brightness <= 0.8 || val < 0)) brightness += val*(1 + 50*pow(brightness, 3))/500
+    
+    
+    ; // TODo deal with gama correction
     break;
   case 1:
-    if ((signalDelay >= 0 || val > 0) && (signalDelay <= 1500 || val < 0)) signalDelay += val*4;
+    if ((signalDelay >= 0 || val > 0) && (signalDelay <= 2000 || val < 0)) signalDelay += val*6;
     break;
-      case 2:
-    if ((incFlow >= 0 || val > 0) && (incFlow <= 0.1 || val < 0)) incFlow += val/5000;
+  case 2:
+    if ((incFlow >= 0 || val > 0) && (incFlow <= 0.16 || val < 0)) incFlow += val/2000;
     break;
-      case 3:
-    if ((rateFlow >= 0 || val > 0) && (rateFlow <= 0.1 || val < 0)) rateFlow += val/5000;
+  case 3:
+    if ((rateFlow >= 0 || val > 0) && (rateFlow <= 0.2 || val < 0)) rateFlow += val/2000;
+    break;
+  case 4:
+    if ((incFlow2 >= 0 || val > 0) && (incFlow2 <= 0.15 || val < 0)) incFlow2 += val/2000;
+    break;
+  case 5:
+    if ((rateFlow2 >= 0 || val > 0) && (rateFlow2 <= 0.2 || val < 0)) rateFlow2 += val/2000;
+    break;
+  case 6:
+    if ((shadowFlowFactor >= 0 || val > 0) && (shadowFlowFactor <= 1.5 || val < 0)) shadowFlowFactor += val/120;
     break;
   }
 }
@@ -165,7 +225,7 @@ void mouseClicked(MouseEvent evt) {
     else {
     }
   } else if (mouseButton == RIGHT) {
-    if (ledsInside != null) {
+    if (ledsInside.size() > 0) {
       ledSystem.getLed(ledsInside.get(0)).switchSelect();
     }
   }
@@ -176,7 +236,7 @@ void mouseDragged() {
   ledsInside = ledSystem.isInside(new PVector(mouseX, mouseY), 0);
   // for painting leds
   if (mouseButton == LEFT) {
-    if (ledsInside.size() > 0 & !makingLEDs) {
+    if (ledsInside.size() > 0 && !makingLEDs) {
       // Move the LED selected
       ledSystem.getLed(ledsInside.get(0)).move(new PVector(mouseX, mouseY));
     } else if (makingLEDs) {
@@ -213,14 +273,23 @@ void mouseReleased() {
   }
 }
 
+void showSelMode() {
+  for (int i = 0; i <= selMode; i++) {
+    ledSystem.getLed(selModeLeds[i]).setMildSignal();
+  }
+}
+
 void keyPressed() {
   if (key == CODED) {
     switch(keyCode) {
     case UP:
-      selMode = (selMode+1)%6;
+      selMode = (selMode+1)%7;
+      showSelMode();
       break;
     case DOWN:
-      selMode = (selMode-1)%6;
+      if (selMode == 0) selMode = 7; 
+      selMode = selMode-1;
+      showSelMode();
       break;
     case LEFT:
       updateVariable(-1);
@@ -228,10 +297,36 @@ void keyPressed() {
     case RIGHT:
       updateVariable(1);
       break;
+    case ENTER:
     }
   } else {
-    letterSystem.signalLetter((char) key);
+    if ((key == ENTER || key == RETURN || key == '\n') && lastKey == ' ') {
+      letterSystem.setQueue(inputBuffer);
+      inputBuffer = "";
+    } else if (key == BACKSPACE || key == '\b') {
+      if (inputBuffer.length() > 1) {
+        inputBuffer = inputBuffer.substring(0, inputBuffer.length()-1);
+      }
+      if (lastKey == ' ') {
+        inputBuffer = "";
+      }
+    } else if (key == '\t' && lastKey == ' ') {
+      lettersOn = !lettersOn;
+    } else if (key == '`' && lastKey == ' ') {
+      flowOn = !flowOn;
+      ledSystem.clearColors();
+    } else {
+      //if (inputBuffer.length() == 0 && ) 
+      inputBuffer += key;
+      //letterSystem.signalLetter((char) key);
+
+      //if (true) {
+      //  letterSystem.fadeLetter(key);
+      //}
+    }
   }
+
+  lastKey = key;
 }
 
 void doubleClicked() {
@@ -252,8 +347,8 @@ void doubleClicked() {
   }
 }
 
-public void makePoem() {
-  String input = cp5.get(Textfield.class, "input").getText();
+public void makePoem(String input) {
+  //String input = cp5.get(Textfield.class, "input").getText();
   if (input != null) {
     letterSystem.setQueue(input);
   }
@@ -386,7 +481,7 @@ void showGrid() {
   stroke(0, 50);
   pushMatrix();
   translate(width/2, height/2);
-  float res = height / 8;
+  float res = ledSize*5;
   for (float i = -height/2; i < height/2; i += res) {
     for (float j = -width/2; j < width/2; j+= res) {
       rect(j, i, res, res);

@@ -30,7 +30,7 @@ class Led {
     //strokeWeight(1);
     //stroke(0);
     noStroke();
-    fill(_fill);
+    fill(hue(_fill), saturation(_fill), 2*brightness(_fill));
     pushMatrix();
     translate(pos.x, pos.y);
     //rectMode(CENTER);
@@ -57,11 +57,15 @@ class Led {
   }
 
   void setSignalColor() {
-    c = color((hue(c)+0.5) % 1.0, saturation(c)-signalSaturation, brightness);
+    c = color((hue(c)+0.3) % 1.0, saturation(c)-signalSaturation, brightness);
+  }
+  
+  void setMildSignal() {
+    c = color((hue(c)+0.5)%1.0, saturation(c)-signalSaturation*0.5, brightness*(flowOn?0.3:0.2));
   }
   
   String getHSB() {
-    return String.format("%.3f", hue(c)) + "," + String.format("%.3f", saturation(c)) + "," + String.format("%.3f", brightness(c));
+    return hue(c) + "," +  saturation(c) + "," + brightness(c);
   }
   
   String getRGB() {
@@ -76,10 +80,15 @@ class Led {
   void fadeSignal() {
 
     if (millis() - lastSignal >= signalDelay) lastSignal = millis();
-    float fadeFactor = ( millis() - lastSignal < (signalDelay/2) )? ( map(millis()-lastSignal, 0, signalDelay/2*fadeDelay, 0, signalSaturation) ) : ( map(millis()-lastSignal, signalDelay/2 * (1 + fadeDelay) , signalDelay, signalSaturation, 0) );
-    //float fadeFactor = map(millis()-lastSignal, 0, curveFactor, 0, 100);
+    
+    float fadeFactor = 0; 
+    if ( millis() - lastSignal < (signalDelay/2*fadeDelay)) { // TODO only fade out brightness and leave saturation
+      fadeFactor = map(millis()-lastSignal, 0, signalDelay/2, 0, 1);
+    } else if (millis() - lastSignal >= (signalDelay/2*(1-fadeDelay))) {
+      fadeFactor = map(millis()-lastSignal, signalDelay/2, signalDelay, 1, 0);
+    }
 
-    c = color((hue(c)) % 1.0, saturation(c)-fadeFactor, brightness);
+    c = color((hue(c)+(flowOn?0.5:0)) % 1.0, (flowOn?0.9:1)-fadeFactor*signalSaturation, brightness*fadeFactor*(flowOn?0.8:1));
   }
 
   void switchSelect() {
