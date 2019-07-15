@@ -8,8 +8,9 @@ class Mode {
   }
 
   void setMode(int i) {
-    if (i > totalModes) return;
+    if (i >= totalModes) return;
     currentMode = i;
+    println("currentMode: " + currentMode);
 
     switch(i) {
     case 0:
@@ -142,7 +143,7 @@ class Mode {
 
   void nextMode() {
     int newMode = (currentMode+1) % totalModes;
-    setMode(newMode);
+    setMode(newMode); // TODO lerp between modes
   }
 
   void printMode() {

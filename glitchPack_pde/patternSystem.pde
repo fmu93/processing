@@ -1,6 +1,6 @@
 class PatternSystem {
 
-  ArrayList<Particle> particles = new ArrayList<Particle>();
+  //ArrayList<Particle> particles = new ArrayList<Particle>();
   PVector[] flowField;
   int maxCount = 200;
   float res;
@@ -13,7 +13,7 @@ class PatternSystem {
   float[] colorSpread = {1.7, 0.5};  //[center, range/2]
 
   PatternSystem() {
-    particles = new ArrayList<Particle>();
+    //particles = new ArrayList<Particle>();
     res = ledSize;
     //cols = floor(width/res*0.9);
     //rows = floor(height/res*0.9);
@@ -27,7 +27,7 @@ class PatternSystem {
     colorSpread[0] = (colorSpread[0] + 0.0003) % 1.0;
     colorSpread[1] = (colorSpread[1] + incSpread);
     //colorSpread[1] = map(mouseY, 0, height, 0,4*PI);
-    if (colorSpread[1] < 0 || colorSpread[1] > 2) incSpread = incSpread*-1;
+    if (colorSpread[1] < 0 || colorSpread[1] > 1.8) incSpread = incSpread*-1;
     
   }
 
@@ -115,7 +115,7 @@ class PatternSystem {
     int index = (x+y*cols);
     return flowField[index];
   }
-
+/**
   void matrix() {
     if (particles.size() < maxCount && frameCount % 5 == 0) {
       Particle _part = new Particle(new PVector(random(width), 0));
@@ -144,4 +144,5 @@ class PatternSystem {
       }
     }
   }
+  **/
 }

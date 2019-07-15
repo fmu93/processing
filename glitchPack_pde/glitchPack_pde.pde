@@ -13,7 +13,7 @@ public static PatternSystem patternSystem;
 public static Mode mode;
 
 boolean makingLEDs = false;
-static boolean editing = true;
+static boolean editing = false;
 PVector stripStart;
 PVector stripEnd;
 String inputBuffer = "";
@@ -24,7 +24,7 @@ public static int ledSize = 20;
 public static float showSelModeDelay = 3000;
 public static float brightness = 0.2; // this is independent of mode
 public static boolean modeLoop = true;
-public static float modeInterval = 8000; //2*60*1000; // 2 min in millis
+public static float modeInterval = 60000; //2*60*1000; // 2 min in millis
 
 // variables in modes
 
@@ -75,7 +75,7 @@ int port = 8080;
  **/
 
 void setup() {
-  size(700, 1000);
+  size(100, 100);
   frameRate(20);
 
   colorMode(HSB, 1.0);
@@ -84,7 +84,6 @@ void setup() {
 
   myClient = new Client(this, "127.0.0.1", port);
   //myClient.write("Trying connection!");
-
 
   if (editing) {
     font = createFont("arial", 12);
@@ -99,11 +98,10 @@ void draw() {
 
   startFrame = millis();
   background(0.1);
-  
+
   // load next mode at intervals TODO check performance adding frameCount % 200 == 0 &&
   if (modeLoop && frameCount % 200 == 0 && millis() - lastMode > modeInterval) {
     mode.nextMode();
-    println("Mode set to: " + mode.currentMode);
   }
 
   if (flowOn) {
@@ -314,18 +312,15 @@ void keyPressed() {
     } else if (key == '`' && lastKey == ' ') {
       flowOn = !flowOn;
       ledSystem.clearColors();
-    } else if (key == '1' && lastKey == ' ') {
-      modeLoop = ! modeLoop;
-      println("modeLoop: " + modeLoop);
-      mode.printMode();
+    } else if (key == '-' && lastKey == ' ') {
+      modeLoop = true; // TODO make visible output for modeLoop on/off
+    } else if (key == '=' && lastKey == ' ') {
+      modeLoop = false;
+      //mode.printMode();
+    } else if ("1234567890".indexOf(key) != -1 && lastKey == ' ') {
+      mode.setMode(parseInt(key)-48);
     } else {
-      //if (inputBuffer.length() == 0 && ) 
       inputBuffer += key;
-      //letterSystem.signalLetter((char) key);
-
-      //if (true) {
-      //  letterSystem.fadeLetter(key);
-      //}
     }
   }
 

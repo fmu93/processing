@@ -44,7 +44,7 @@ class LetterSystem {
   void showQueue() {
 
     if (keyPressed && key != CODED) {
-      signalLetter(key);
+      signalLetter(key); // TODO fade letter and fade out after some time with manual input
     } else if (lettersOn) {
       evolveQueue();
 
