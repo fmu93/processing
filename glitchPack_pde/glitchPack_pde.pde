@@ -10,9 +10,10 @@ ControlP5 cp5;
 public static LedSystem ledSystem;
 public static LetterSystem letterSystem;
 public static PatternSystem patternSystem;
+public static Mode mode;
 
 boolean makingLEDs = false;
-static boolean editing = false;
+static boolean editing = true;
 boolean lettersOn = !editing;
 boolean flowOn = true;
 PVector stripStart;
@@ -22,17 +23,19 @@ char lastKey = 'a';
 int[] selModeLeds = {104, 272, 271, 270, 269, 268, 267, 266, 265};
 
 public static int ledSize = 20;
+public static float showSelModeDelay = 3000;
+public static float brightness = 0.2; // this is independent of mode
+
+// variables in modes
 public static float signalDelay = 800;
 public static float fadeDelay = 1;
 public static float signalSaturation = 0.2;
-public static float brightness = editing?1:0.2;
 public static float saturation = 1;
-public static  float incFlow = 0.07;
+public static float incFlow = 0.07;
 public static float rateFlow = 0.06;
-public static  float incFlow2 = 0.1;
+public static float incFlow2 = 0.1;
 public static float rateFlow2 = 0.08;
 public static float shadowFlowFactor = 0.7;
-public static float showSelModeDelay = 3000;
 
 int selMode = 0;
 float lastShowSelMode = millis();
@@ -143,8 +146,6 @@ void draw() {
   if (editing) {
     ledSystem.show2();
   } else {
-
-    //ledSystem.show2();
     myClient.write(ledSystem.toSocket());
   }
 
@@ -181,8 +182,10 @@ void init() {
   ledSystem = new LedSystem();
   letterSystem = new LetterSystem();
   patternSystem = new PatternSystem();
+  mode = new Mode(0);
   if (!editing) {
-    loadSelected(new File("/home/pi/Desktop/glitchPack_pde/zug.txt"));
+    boolean loaded = loadSelected(new File("/home/pi/Desktop/glitchPack_pde/zug.txt"));
+    if (!loaded) loadSelected(new File("D:/Libraries/Documents/GitHub/processing/glitchPack_pde/zug.txt"));
   } else {
     loadSelected(new File("D:/Libraries/Documents/GitHub/processing/glitchPack_pde/zug.txt"));
   }
@@ -191,10 +194,7 @@ void init() {
 void updateVariable(float val) {
   switch(selMode) { // TODO same snapshot of all variables in modes class
   case 0:
-    if ((brightness >= 0 || val > 0) && (brightness <= 0.8 || val < 0)) brightness += val*(1 + 50*pow(brightness, 3))/500
-    
-    
-    ; // TODo deal with gama correction
+    if ((brightness >= 0 || val > 0) && (brightness <= 0.8 || val < 0)) brightness += val*(1 + 50*pow(brightness, 3))/500; // TODo deal with gama correction
     break;
   case 1:
     if ((signalDelay >= 0 || val > 0) && (signalDelay <= 2000 || val < 0)) signalDelay += val*6;
@@ -297,7 +297,7 @@ void keyPressed() {
     case RIGHT:
       updateVariable(1);
       break;
-    case ENTER:
+    case RETURN:
     }
   } else {
     if ((key == ENTER || key == RETURN || key == '\n') && lastKey == ' ') {
@@ -315,6 +315,8 @@ void keyPressed() {
     } else if (key == '`' && lastKey == ' ') {
       flowOn = !flowOn;
       ledSystem.clearColors();
+      
+      mode.printMode();
     } else {
       //if (inputBuffer.length() == 0 && ) 
       inputBuffer += key;
@@ -392,7 +394,7 @@ void loadConfig() {
   selectInput("Select a file to process:", "loadSelected");
 }
 
-void loadSelected(File selection) {
+boolean loadSelected(File selection) {
   if (selection == null) {
     println("Window was closed or the user hit cancel.");
   } else {
@@ -437,6 +439,7 @@ void loadSelected(File selection) {
     delay(500);
     loop();
   }
+    return (reader != null);
 }
 
 public void saveLetter() {
