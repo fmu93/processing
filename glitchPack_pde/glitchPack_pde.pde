@@ -14,8 +14,6 @@ public static Mode mode;
 
 boolean makingLEDs = false;
 static boolean editing = true;
-boolean lettersOn = !editing;
-boolean flowOn = true;
 PVector stripStart;
 PVector stripEnd;
 String inputBuffer = "";
@@ -25,10 +23,13 @@ int[] selModeLeds = {104, 272, 271, 270, 269, 268, 267, 266, 265};
 public static int ledSize = 20;
 public static float showSelModeDelay = 3000;
 public static float brightness = 0.2; // this is independent of mode
-public static boolean modeLoop = false;
+public static boolean modeLoop = true;
 public static float modeInterval = 8000; //2*60*1000; // 2 min in millis
 
 // variables in modes
+
+public static boolean lettersOn = false;
+public static boolean flowOn = true;
 public static float signalDelay = 800;
 public static float fadeDelay = 1;
 public static float signalSaturation = 0.2;
@@ -315,6 +316,7 @@ void keyPressed() {
       ledSystem.clearColors();
     } else if (key == '1' && lastKey == ' ') {
       modeLoop = ! modeLoop;
+      println("modeLoop: " + modeLoop);
       mode.printMode();
     } else {
       //if (inputBuffer.length() == 0 && ) 
