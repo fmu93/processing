@@ -25,6 +25,8 @@ int[] selModeLeds = {104, 272, 271, 270, 269, 268, 267, 266, 265};
 public static int ledSize = 20;
 public static float showSelModeDelay = 3000;
 public static float brightness = 0.2; // this is independent of mode
+public static boolean modeLoop = false;
+public static float modeInterval = 8000; //2*60*1000; // 2 min in millis
 
 // variables in modes
 public static float signalDelay = 800;
@@ -39,6 +41,7 @@ public static float shadowFlowFactor = 0.7;
 
 int selMode = 0;
 float lastShowSelMode = millis();
+float lastMode = millis();
 IntList ledsInside;
 float startFrame;
 
@@ -71,7 +74,7 @@ int port = 8080;
  **/
 
 void setup() {
-  size(100, 100);
+  size(700, 1000);
   frameRate(20);
 
   colorMode(HSB, 1.0);
@@ -95,6 +98,40 @@ void draw() {
 
   startFrame = millis();
   background(0.1);
+  
+  // load next mode at intervals TODO check performance adding frameCount % 200 == 0 &&
+  if (modeLoop && frameCount % 200 == 0 && millis() - lastMode > modeInterval) {
+    mode.nextMode();
+    println("Mode set to: " + mode.currentMode);
+  }
+
+  if (flowOn) {
+    ledSystem.updateFlowField();
+    patternSystem.updateZ();
+    patternSystem.evolveSpread();
+  } else {
+    ledSystem.clearColors();
+  }
+
+  letterSystem.showQueue();
+  //signalDelay = map(cp5.get(Slider.class, "v1").getValue(), 0, 100, 0, 1000);
+  if (millis() - lastShowSelMode < showSelModeDelay) {
+    showSelMode();
+  }
+
+  if (keyPressed && key == CODED) {
+    showSelMode();
+    lastShowSelMode = millis();
+  } else if (keyPressed && key == ' ') {
+    ledSystem.rainbow();
+  } else {
+  }
+  // show all color mods
+  if (editing) {
+    ledSystem.show2();
+  } else {
+    myClient.write(ledSystem.toSocket());
+  }
 
   if (editing) {
     //image(img, width/2, height/2, width*0.95, height);
@@ -119,66 +156,27 @@ void draw() {
     }
   }
 
-  if (flowOn) {
-    ledSystem.updateFlowField();
-  } else {
-    ledSystem.clearColors();
-  }
-  patternSystem.updateZ();
-  patternSystem.evolveSpread();
-
-  //ledSystem.rainbow();
-
-  letterSystem.showQueue();
-  //signalDelay = map(cp5.get(Slider.class, "v1").getValue(), 0, 100, 0, 1000);
-  if (millis() - lastShowSelMode < showSelModeDelay) {
-    showSelMode();
-  }
-
-  if (keyPressed && key == CODED) {
-    showSelMode();
-    lastShowSelMode = millis();
-  } else if (keyPressed && key == ' ') {
-    ledSystem.rainbow();
-  } else {
-  }
-  // show all color mods
-  if (editing) {
-    ledSystem.show2();
-  } else {
-    myClient.write(ledSystem.toSocket());
-  }
-
-
   // display number of LEDS
-  //fill(0);
-  //rect(0, 0, 100, 20);
   fill(1);
   text(ledSystem.ledCount(), 10, 10);
   text(frameRate, 50, 10);
   text("selMode: " + selMode, 110, 10);
   float processTime = millis() - startFrame;
   text("millis/f: " + processTime, 250, 10);
-  //noLoop();
-  //if (mousePressed) {
-  //  loop();
-  //} else {
-  //  noLoop();
-  //}
 }
 
 void init() {
   // TODO load python socket script from here
   /**
-  File pythonSocket = new File("/home/pi/Desktop/runLedPack1.sh");
-  try {
-  Runtime.getRuntime().exec(new String[]{"/bin/sh" ,"-c", pythonSocket.getPath()});
-  } catch (Exception e) {
+   File pythonSocket = new File("/home/pi/Desktop/runLedPack1.sh");
+   try {
+   Runtime.getRuntime().exec(new String[]{"/bin/sh" ,"-c", pythonSocket.getPath()});
+   } catch (Exception e) {
    println(e); 
-  }
-  //wait(20);
-  **/
-  
+   }
+   //wait(20);
+   **/
+
   ledSystem = new LedSystem();
   letterSystem = new LetterSystem();
   patternSystem = new PatternSystem();
@@ -315,7 +313,8 @@ void keyPressed() {
     } else if (key == '`' && lastKey == ' ') {
       flowOn = !flowOn;
       ledSystem.clearColors();
-      
+    } else if (key == '1' && lastKey == ' ') {
+      modeLoop = ! modeLoop;
       mode.printMode();
     } else {
       //if (inputBuffer.length() == 0 && ) 
@@ -439,7 +438,7 @@ boolean loadSelected(File selection) {
     delay(500);
     loop();
   }
-    return (reader != null);
+  return (reader != null);
 }
 
 public void saveLetter() {

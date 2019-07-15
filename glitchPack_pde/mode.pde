@@ -1,10 +1,16 @@
 class Mode {
+  
+  public int totalModes = 4;
+  int currentMode = 0;
 
   Mode(int i) {
     setMode(i);
   }
 
   void setMode(int i) {
+    if (i > totalModes) return;
+    currentMode = i;
+    
     switch(i) {
     case 0:
       signalDelay = 800;
@@ -43,18 +49,23 @@ class Mode {
       break;
     }
   }
+  
+  void nextMode() {
+    int newMode = (currentMode+1) % totalModes;
+    setMode(newMode);
+  }
 
   void printMode() {
     println("Printing variables for mode... \n");
-    println("signalDelay =" + signalDelay + ";");
-    println("fadeDelay =" + fadeDelay + ";");
-    println("signalSaturation =" + signalSaturation + ";");
-    println("saturation =" + saturation + ";");
-    println("incFlow =" + incFlow + ";");
-    println("rateFlow =" + rateFlow + ";");
-    println("incFlow2 =" + incFlow2 + ";");
-    println("rateFlow2 =" + rateFlow2 + ";");
-    println("shadowFlowFactor =" + shadowFlowFactor + ";");
+    println("signalDelay = " + signalDelay + ";");
+    println("fadeDelay = " + fadeDelay + ";");
+    println("signalSaturation = " + signalSaturation + ";");
+    println("saturation = " + saturation + ";");
+    println("incFlow = " + incFlow + ";");
+    println("rateFlow = " + rateFlow + ";");
+    println("incFlow2 = " + incFlow2 + ";");
+    println("rateFlow2 = " + rateFlow2 + ";");
+    println("shadowFlowFactor = " + shadowFlowFactor + ";");
     println("");
   }
 }
