@@ -61,11 +61,11 @@ class Led {
   }
   
   void setMildSignal() {
-    c = color((hue(c)+0.5)%1.0, saturation(c)-signalSaturation*0.5, brightness*(flowOn?0.3:0.2));
+    c = color((hue(c)+0.5)%1.0, saturation(c)-signalSaturation*0.5, brightness);
   }
   
   String getHSB() {
-    return hue(c) + "," +  saturation(c) + "," + pow(brightness(c), 2); // TODO gamma correction here
+    return hue(c) + "," +  saturation(c) + "," + pow(brightness(c), 2.5); // TODO gamma correction here
   }
   
   String getRGB() {

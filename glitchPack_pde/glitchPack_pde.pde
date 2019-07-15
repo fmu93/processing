@@ -24,7 +24,7 @@ public static int ledSize = 20;
 public static float showSelModeDelay = 3000;
 public static float brightness = 0.2; // this is independent of mode
 public static boolean modeLoop = true;
-public static float modeInterval = 60000; //2*60*1000; // 2 min in millis
+public static float modeInterval = 80000; //2*60*1000; // 2 min in millis
 
 // variables in modes
 
@@ -42,7 +42,7 @@ public static float shadowFlowFactor = 0.7;
 
 int selMode = 0;
 float lastShowSelMode = millis();
-float lastMode = millis();
+public float lastMode = millis();
 IntList ledsInside;
 float startFrame;
 
@@ -191,7 +191,7 @@ void init() {
 void updateVariable(float val) {
   switch(selMode) { // TODO same snapshot of all variables in modes class
   case 0:
-    if ((brightness >= 0 || val > 0) && (brightness <= 1 || val < 0)) brightness += val/100; // TODo deal with gama correction
+    if ((brightness >= 0 || val > 0) && (brightness <= 0.8 || val < 0)) brightness += val/100; // TODo deal with gama correction
     break;
   case 1:
     if ((signalDelay >= 0 || val > 0) && (signalDelay <= 2000 || val < 0)) signalDelay += val*6;

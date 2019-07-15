@@ -10,6 +10,7 @@ class Mode {
   void setMode(int i) {
     if (i >= totalModes) return;
     currentMode = i;
+    lastMode = millis();
     println("currentMode: " + currentMode);
 
     switch(i) {
