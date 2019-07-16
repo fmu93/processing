@@ -13,7 +13,7 @@ public static PatternSystem patternSystem;
 public static Mode mode;
 
 boolean makingLEDs = false;
-static boolean editing = false;
+static boolean editing = true;
 PVector stripStart;
 PVector stripEnd;
 String inputBuffer = "";
@@ -76,6 +76,10 @@ int port = 8080;
 
 void setup() {
   size(100, 100);
+  if (editing) {
+    frame.setResizable(true);
+    frame.setSize(700, 900);
+  }
   frameRate(20);
 
   colorMode(HSB, 1.0);
