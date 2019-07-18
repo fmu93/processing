@@ -1,6 +1,8 @@
 class LedSystem { //<>//
 
   private HashMap<Integer, Led> ledMap;
+  private int ledCount = 0;
+  private float brightnessFactor = 0;
 
   //ArrayList<Led> leds = new ArrayList<Led>();
   private ArrayList<Led> ledsToSignal = new ArrayList<Led>();
@@ -34,9 +36,19 @@ class LedSystem { //<>//
     }
   }
 
+  float getAverageBrightness() {
+    float sum = 0;
+    Iterator<Map.Entry<Integer, Led>> itr1 = ledMap.entrySet().iterator();
+    while (itr1.hasNext()) {
+      Map.Entry<Integer, Led> entry = itr1.next();
+      sum +=  entry.getValue().getBrightness();
+    }
+
+    return sum/ledCount;
+  }
+
   String toSocket() {
     String toReturn = ">" + ledMap.size() + "\n";
-    //colorMode(RGB, 1.0);
 
     Iterator<Map.Entry<Integer, Led>> itr1 = ledMap.entrySet().iterator();
     while (itr1.hasNext()) {
@@ -98,6 +110,7 @@ class LedSystem { //<>//
 
   void addLed(int id_, PVector pos_) {
     ledMap.put(id_, new Led(pos_, id_));
+    ledCount = ledMap.size();
   }
 
   void addLed(PVector pos_) {
@@ -114,7 +127,7 @@ class LedSystem { //<>//
       last = entry.getKey();
     }
 
-    ledMap.put(last+1, new Led(pos_, last+1));
+    addLed(last+1, pos_);
   }
 
   IntList isInside(PVector point, float radius) { 
@@ -132,17 +145,17 @@ class LedSystem { //<>//
   }
 
   void updateFlowField() {
-
+    
     Iterator<Map.Entry<Integer, Led>> itr1 = ledMap.entrySet().iterator();
     while (itr1.hasNext()) {
       Map.Entry<Integer, Led> entry = itr1.next();
 
       float hue = patternSystem.updateLookup(entry.getValue().pos);
       float bri = patternSystem.brightnessLookup(entry.getValue().pos);
-      
-      
+
+
       // shadowFactor = [0-1] -> briStart = [0, 0.5], cutoff = [0, 0.8];
-      
+
 
       float briStart = map(shadowFlowFactor, 0, 1, 0, 0.5);
       float cutoff = map(shadowFlowFactor, 0, 1, briStart, 0.8);
@@ -156,9 +169,19 @@ class LedSystem { //<>//
         //bri = map(bri, 0, 1, 0, brightness);
         bri = brightness;
       }
+      
       color c = color(hue, saturation, bri);
+      c = evenBrightness(c, brightnessFactor);
       entry.getValue().setColor(c);
     }
+    
+    brightnessFactor = getAverageBrightness();
+  }
+  
+  color evenBrightness(color c, float factor) {
+    factor = map(factor, 0, brightness, 2, 1);
+    
+    return color(hue(c), saturation(c), constrain(brightness(c)*factor, 0, 1));
   }
 
   IntList isInside(PVector point) {
@@ -208,9 +231,7 @@ class LedSystem { //<>//
 
   void removeLed(int _id) {
     removeLed(ledMap.get(_id));
-    //if (ledMap.keySet().contains(_id)) {
-    //  ledMap.remove(ledMap.get(_id));
-    //}
+    ledCount = ledMap.size();
   }
 
 

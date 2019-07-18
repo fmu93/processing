@@ -59,15 +59,15 @@ class Led {
   void setSignalColor() {
     c = color((hue(c)+0.3) % 1.0, saturation(c)-signalSaturation, brightness);
   }
-  
+
   void setMildSignal() {
     c = color((hue(c)+0.5)%1.0, saturation(c)-signalSaturation*0.5, brightness);
   }
-  
+
   String getHSB() {
     return hue(c) + "," +  saturation(c) + "," + pow(brightness(c), 2.5); // TODO gamma correction here
   }
-  
+
   String getRGB() {
     return red(c) + "," + green(c) + "," + blue(c);
   }
@@ -77,10 +77,18 @@ class Led {
     lastSignal = millis();
   }
 
+  float getBrightness() {
+    return brightness(c);
+  }
+
+  void setBrightness(float b) {
+    c = color(hue(c), saturation(c), b);
+  }
+
   void fadeSignal() {
 
     if (millis() - lastSignal >= signalDelay) lastSignal = millis();
-    
+
     float fadeFactor = 0; 
     if ( millis() - lastSignal < (signalDelay/2*fadeDelay)) { // TODO only fade out brightness and leave saturation
       fadeFactor = map(millis()-lastSignal, 0, signalDelay/2, 0, 1);
