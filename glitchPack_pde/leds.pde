@@ -171,7 +171,7 @@ class LedSystem { //<>//
       }
       
       color c = color(hue, saturation, bri);
-      c = evenBrightness(c, brightnessFactor);
+      //c = evenBrightness(c, brightnessFactor);
       entry.getValue().setColor(c);
     }
     

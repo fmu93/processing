@@ -18,7 +18,7 @@ PVector stripStart;
 PVector stripEnd;
 String inputBuffer = "";
 char lastKey = 'a';
-int[] selModeLeds = {104, 272, 271, 270, 269, 268, 267, 266, 265};
+int[] selModeLeds = {103, 271, 270, 269, 268, 267, 266, 265, 264};
 
 public static int ledSize = 20;
 public static float showSelModeDelay = 3000;
@@ -62,7 +62,7 @@ int port = 8080;
  LEDs in a strip are 1.66 cm away
  
  // LEDs covered by others
- 41, 53, 69, 88, 238
+ 52, 68, 87, 237
  
  // qualitative brightness (in my room with some natural light)
  super bright = 0.8
@@ -418,16 +418,22 @@ boolean loadSelected(File selection) {
           ledSystem.addLed(id, pos_);
         }        
         // letters
-        //String[] m2 = match(line, "Letter:(\\[\\s\\S]),\\[((\\d+,?)*)]"); // letter,[int, int, int]
+        //String line2 = "";
         String[] m2 = match(line, "Letter:(\\s|\\S),\\[((\\d+,?)*)]"); // letter,[int, int, int]
         if (m2 != null) {
 
           Character letter = m2[1].charAt(0);
           IntList idList = new IntList();
+          //line2 += "Letter:" + letter + ",[";
           for (String idString : m2[2].split(",")) {
-            idList.append(int(idString));
+            int ledId = int(idString);
+            //if (ledId >= 41) {
+            //  ledId = ledId - 1;
+            //}
+            idList.append(ledId);
           }
           letterSystem.addLetter(idList, letter);
+          //line2 += idList.join(",") + "]";
         }
         println(line);
       } 
