@@ -13,7 +13,7 @@ public static PatternSystem patternSystem;
 public static Mode mode;
 
 boolean makingLEDs = false;
-static boolean editing = false;
+static boolean editing = true;
 PVector stripStart;
 PVector stripEnd;
 String inputBuffer = "";
@@ -22,7 +22,7 @@ int[] selModeLeds = {103, 271, 270, 269, 268, 267, 266, 265, 264};
 
 public static int ledSize = 20;
 public static float showSelModeDelay = 3000;
-public static float brightness = 0.2; // this is independent of mode
+public static float brightness = editing?1:0.2; // this is independent of mode
 public static boolean modeLoop = true;
 public static float modeInterval = 80000; //2*60*1000; // 2 min in millis
 
