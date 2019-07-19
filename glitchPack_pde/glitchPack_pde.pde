@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import controlP5.*; //<>// //<>// //<>// //<>//
-=======
-import controlP5.*; //<>// //<>// //<>//
->>>>>>> 75e1673e8c9404bb76902f6f61cdc6052c1740d4
+import controlP5.*;  //<>// //<>//
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Iterator;
@@ -17,7 +13,7 @@ public static PatternSystem patternSystem;
 public static Mode mode;
 
 boolean makingLEDs = false;
-static boolean editing = true;
+static boolean editing = false;
 PVector stripStart;
 PVector stripEnd;
 String inputBuffer = "";
@@ -200,7 +196,7 @@ void init() {
 void updateVariable(float val) {
   switch(selMode) { // TODO same snapshot of all variables in modes class
   case 0:
-    if ((brightness >= 0 || val > 0) && (brightness <= 0.9 || val < 0)) brightness += val/100; // TODo deal with gama correction
+    if ((brightness >= 0 || val > 0) && (brightness <= 1 || val < 0)) brightness += val/100; // TODo deal with gama correction
     break;
   case 1:
     if ((signalDelay >= 0 || val > 0) && (signalDelay <= 2000 || val < 0)) signalDelay += val*6;

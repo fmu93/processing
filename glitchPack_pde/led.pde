@@ -65,7 +65,7 @@ class Led {
   }
 
   String getHSB() {
-    return hue(c) + "," +  saturation(c) + "," + pow(brightness(c)*brightSmoothFactor, 2.5); // TODO gamma correction here
+    return hue(c) + "," +  saturation(c) + "," + pow(brightness(c)*brightSmoothFactor, 2); // TODO gamma correction here
   }
 
   String getRGB() {
