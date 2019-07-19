@@ -1,4 +1,4 @@
-import controlP5.*; //<>// //<>//
+import controlP5.*; //<>// //<>// //<>// //<>//
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Iterator;
@@ -77,8 +77,8 @@ int port = 8080;
 void setup() {
   size(100, 100);
   if (editing) {
-    frame.setResizable(true);
-    frame.setSize(700, 900);
+    surface.setResizable(true);
+    surface.setSize(700, 900);
   }
   frameRate(20);
 
@@ -185,9 +185,8 @@ void init() {
   patternSystem = new PatternSystem();
   mode = new Mode(0);
   boolean piLoaded = false;
-  if (!editing) {
-    piLoaded = loadSelected(new File("/home/pi/Desktop/repos/processing/glitchPack_pde/zug.txt"));
-  } else if (!piLoaded) {
+  piLoaded = loadSelected(new File("/home/pi/Desktop/repos/processing/glitchPack_pde/zug.txt"));
+  if (!piLoaded) {
     loadSelected(new File("D:/Libraries/Documents/GitHub/processing/glitchPack_pde/zug.txt"));
   }
 }
