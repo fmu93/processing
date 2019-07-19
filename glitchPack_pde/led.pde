@@ -30,7 +30,7 @@ class Led {
     //strokeWeight(1);
     //stroke(0);
     noStroke();
-    fill(hue(_fill), saturation(_fill), 2*brightness(_fill));
+    fill(hue(_fill), saturation(_fill), brightSmoothFactor*brightness(_fill));
     pushMatrix();
     translate(pos.x, pos.y);
     //rectMode(CENTER);
@@ -65,7 +65,7 @@ class Led {
   }
 
   String getHSB() {
-    return hue(c) + "," +  saturation(c) + "," + pow(brightness(c), 2.5); // TODO gamma correction here
+    return hue(c) + "," +  saturation(c) + "," + pow(brightness(c)*brightSmoothFactor, 2.5); // TODO gamma correction here
   }
 
   String getRGB() {
