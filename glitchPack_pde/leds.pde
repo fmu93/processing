@@ -2,7 +2,6 @@ class LedSystem { //<>//
 
   private HashMap<Integer, Led> ledMap;
   private int ledCount = 0;
-  private float brightnessFactor = 0;
 
   //ArrayList<Led> leds = new ArrayList<Led>();
   private ArrayList<Led> ledsToSignal = new ArrayList<Led>();
@@ -174,8 +173,6 @@ class LedSystem { //<>//
       //c = evenBrightness(c, brightnessFactor);
       entry.getValue().setColor(c);
     }
-    
-    brightnessFactor = getAverageBrightness();
   }
   
   color evenBrightness(color c, float factor) {

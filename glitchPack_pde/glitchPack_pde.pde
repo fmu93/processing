@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import controlP5.*; //<>// //<>// //<>// //<>//
+=======
+import controlP5.*; //<>// //<>// //<>//
+>>>>>>> 75e1673e8c9404bb76902f6f61cdc6052c1740d4
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Iterator;
@@ -13,7 +17,7 @@ public static PatternSystem patternSystem;
 public static Mode mode;
 
 boolean makingLEDs = false;
-static boolean editing = false;
+static boolean editing = true;
 PVector stripStart;
 PVector stripEnd;
 String inputBuffer = "";
@@ -22,9 +26,10 @@ int[] selModeLeds = {103, 271, 270, 269, 268, 267, 266, 265, 264};
 
 public static int ledSize = 20;
 public static float showSelModeDelay = 3000;
-public static float brightness = 0.2; // this is independent of mode
+public static float brightness = editing?1:0.2; // this is independent of mode
 public static boolean modeLoop = true;
 public static float modeInterval = 80000; //2*60*1000; // 2 min in millis
+public static float brightSmoothFactor = 0;
 
 // variables in modes
 
@@ -135,6 +140,7 @@ void draw() {
   } else {
     myClient.write(ledSystem.toSocket());
   }
+  updateSmooth();
 
   if (editing) {
     //image(img, width/2, height/2, width*0.95, height);
@@ -194,7 +200,7 @@ void init() {
 void updateVariable(float val) {
   switch(selMode) { // TODO same snapshot of all variables in modes class
   case 0:
-    if ((brightness >= 0 || val > 0) && (brightness <= 0.8 || val < 0)) brightness += val/100; // TODo deal with gama correction
+    if ((brightness >= 0 || val > 0) && (brightness <= 0.9 || val < 0)) brightness += val/100; // TODo deal with gama correction
     break;
   case 1:
     if ((signalDelay >= 0 || val > 0) && (signalDelay <= 2000 || val < 0)) signalDelay += val*6;
@@ -215,6 +221,10 @@ void updateVariable(float val) {
     if ((shadowFlowFactor >= 0 || val > 0) && (shadowFlowFactor <= 1.5 || val < 0)) shadowFlowFactor += val/120;
     break;
   }
+}
+
+void updateSmooth() {
+  brightSmoothFactor = map(ledSystem.getAverageBrightness(), 0, brightness, 1, 0.75);
 }
 
 void mouseClicked(MouseEvent evt) {
