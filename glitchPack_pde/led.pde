@@ -61,7 +61,7 @@ class Led {
   }
 
   void setMildSignal() {
-    c = color((hue(c)+0.5)%1.0, saturation(c)-signalSaturation*0.5, brightness);
+    c = color((hue(c)+0.5)%1.0, constrain(saturation(c)-signalSaturation, 0.1, 1), brightness);
   }
 
   String getHSB() {

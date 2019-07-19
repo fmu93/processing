@@ -33,7 +33,7 @@ public static boolean lettersOn = false;
 public static boolean flowOn = true;
 public static float signalDelay = 800;
 public static float fadeDelay = 1;
-public static float signalSaturation = 0.2;
+public static float signalSaturation = 0.06;
 public static float saturation = 1;
 public static float incFlow = 0.07;
 public static float rateFlow = 0.06;
@@ -80,6 +80,9 @@ void setup() {
   if (editing) {
     surface.setResizable(true);
     surface.setSize(700, 900);
+    font = createFont("arial", 12);
+    gui();
+    //img = loadImage("res/vest2.jpg");
   }
   frameRate(20);
 
@@ -90,11 +93,6 @@ void setup() {
   myClient = new Client(this, "127.0.0.1", port);
   //myClient.write("Trying connection!");
 
-  if (editing) {
-    font = createFont("arial", 12);
-    gui();
-    img = loadImage("res/vest2.jpg");
-  }
   init();
 }
 
@@ -220,7 +218,11 @@ void updateVariable(float val) {
 }
 
 void updateSmooth() {
-  brightSmoothFactor = map(ledSystem.getAverageBrightness(), 0, brightness, 1, 0.75);
+  if (brightness > 0.05) {
+    brightSmoothFactor = map(ledSystem.getAverageBrightness(), 0, brightness, 1, 0.6);
+  } else {
+    brightSmoothFactor = 1;
+  }
 }
 
 void mouseClicked(MouseEvent evt) {
