@@ -184,10 +184,10 @@ void init() {
   letterSystem = new LetterSystem();
   patternSystem = new PatternSystem();
   mode = new Mode(0);
+  boolean piLoaded = false;
   if (!editing) {
-    boolean loaded = loadSelected(new File("/home/pi/Desktop/glitchPack_pde/zug.txt"));
-    if (!loaded) loadSelected(new File("D:/Libraries/Documents/GitHub/processing/glitchPack_pde/zug.txt"));
-  } else {
+    piLoaded = loadSelected(new File("/home/pi/Desktop/repos/processing/glitchPack_pde/zug.txt"));
+  } else if (!piLoaded) {
     loadSelected(new File("D:/Libraries/Documents/GitHub/processing/glitchPack_pde/zug.txt"));
   }
 }
