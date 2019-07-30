@@ -47,6 +47,13 @@ public float lastMode = millis();
 IntList ledsInside;
 float startFrame;
 
+public float bpm = 110;
+public float beatInterval = 1000; // millis between beats
+float lastBeat;
+int beats = 0;
+float tapSum = 0;
+int forgetTime = 3000; // 3 seconds 
+
 PFont font;
 
 PrintWriter output;
@@ -114,7 +121,7 @@ void draw() {
   } else {
     ledSystem.clearColors();
   }
-  
+
   updateSmooth();
 
   letterSystem.showQueue();
@@ -165,8 +172,9 @@ void draw() {
   text(ledSystem.ledCount(), 10, 10);
   text(frameRate, 50, 10);
   text("selMode: " + selMode, 110, 10);
+  text("interv: " + int(beatInterval), 200, 10);
   float processTime = millis() - startFrame;
-  text("millis/f: " + processTime, 250, 10);
+  text("millis/f: " + processTime, 300, 10);
 }
 
 void init() {
@@ -190,6 +198,7 @@ void init() {
   if (!piLoaded) {
     loadSelected(new File("D:/Libraries/Documents/GitHub/processing/glitchPack_pde/zug.txt"));
   }
+  lastBeat = millis();
 }
 
 void updateVariable(float val) {
@@ -332,12 +341,31 @@ void keyPressed() {
       //mode.printMode();
     } else if ("1234567890".indexOf(key) != -1 && lastKey == ' ') {
       mode.setMode(parseInt(key)-48);
+    } else if (key == ' ' && lastKey == ' ') {
+      if (millis()-lastBeat < forgetTime) {
+        tapSum += millis() - lastBeat;
+        beats++;
+        if (beats > 3) {
+          beatInterval = beatInterval*0.5 + tapSum/beats*0.5;
+          bpm = bpm*0.5 + 0.5*beats/tapSum*60000;
+        }
+      // reset beats if after forgetTime
     } else {
-      inputBuffer += key;
+      tapSum = 0;
+      beats = 0;
     }
-  }
 
-  lastKey = key;
+    lastBeat = millis();
+  } else {
+    inputBuffer += key;
+  }
+}
+
+lastKey = key;
+}
+
+void keyReleased() {
+  letterSystem.signalLetter(' ');
 }
 
 void doubleClicked() {
