@@ -65,7 +65,7 @@ class LedSystem { //<>//
     float now = millis()/100;
     while (itr1.hasNext()) {
       Map.Entry<Integer, Led> entry = itr1.next();
-      entry.getValue().setColor(color(((entry.getKey()+millis()/20.0)/300.0) % 1.0, 1, brightness*map((entry.getKey() +now) % 8, 0, 7, 1, 0.1)));
+      entry.getValue().setColor(color(((entry.getKey()+millis()/20.0)/300.0) % 1.0, 1, brightness*map((entry.getKey() +now) % 8, 0, 7, 1.3, 0.1)));
     }
   }
 

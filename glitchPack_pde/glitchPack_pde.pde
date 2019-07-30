@@ -219,7 +219,8 @@ void updateVariable(float val) {
 
 void updateSmooth() {
   if (brightness > 0.05) {
-    brightSmoothFactor = map(ledSystem.getAverageBrightness(), 0, brightness, 1, 0.6);
+    float avgBri = ledSystem.getAverageBrightness();
+    brightSmoothFactor = map(avgBri, 0, brightness, 1, map(brightness, 0, 1, 0.8, 0.5));
   } else {
     brightSmoothFactor = 1;
   }
