@@ -20,7 +20,7 @@ class LetterSystem {
   void initPoems() {
     //setQueue("ich bin eine maschine. wir leben, ihr menschen sterbt");
     setQueue("hello fusion !");
-    setQueue("1234567890987654321[,].'\\],'\\[.1234567890987654321");
+    setQueue("1234567890987654321[;,.'],.'.', + - * / */- 0987654321");
   }
 
   void evolveQueue() {
