@@ -144,7 +144,7 @@ class LedSystem { //<>// //<>//
   }
 
   void updateFlowField() {
-    
+
     Iterator<Map.Entry<Integer, Led>> itr1 = ledMap.entrySet().iterator();
     while (itr1.hasNext()) {
       Map.Entry<Integer, Led> entry = itr1.next();
@@ -153,8 +153,8 @@ class LedSystem { //<>// //<>//
       float bri = patternSystem.brightnessLookup(entry.getValue().pos); 
 
 
-      float syncFactor = constrain(shadowFlowFactor*map(sin(map(millis()%(beatInterval*2), 0, beatInterval*2, 0, TWO_PI)), -1, 1, 0.95, 1.05), 0, 1);
-
+      //float syncFactor = constrain(shadowFlowFactor*map(sin(map(millis()%(beatInterval*2), 0, beatInterval*2, 0, TWO_PI)), -1, 1, 0.95, 1.05), 0, 1);
+      float syncFactor = shadowFlowFactor;
 
       float briStart = map(syncFactor, 0, 1, 0, 0.5);
       float cutoff = map(syncFactor, 0, 1, briStart, 0.8);
@@ -168,16 +168,16 @@ class LedSystem { //<>// //<>//
         //bri = map(bri, 0, 1, 0, brightness);
         bri = brightness;
       }
-      
+
       color c = color(hue, saturation, bri);
       //c = evenBrightness(c, brightnessFactor);
       entry.getValue().setColor(c);
     }
   }
-  
+
   color evenBrightness(color c, float factor) {
     factor = map(factor, 0, brightness, 2, 1);
-    
+
     return color(hue(c), saturation(c), constrain(brightness(c)*factor, 0, 1));
   }
 
