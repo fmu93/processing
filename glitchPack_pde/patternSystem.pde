@@ -44,8 +44,8 @@ class PatternSystem {
 
   float brightnessLookup(PVector _pos) {
 
-    float xoff = (_pos.x / res)*incFlow2;
-    float yoff = (_pos.y / res)*incFlow2;
+    float xoff = (_pos.x / res)*incFlow2*map(millis()%(bpm*30000), 0, bpm*30000, 0.8, 1.2);
+    float yoff = (_pos.y / res)*incFlow2*map(millis()%(bpm*30000), 0, bpm*30000, 0.8, 1.2);
 
     float bri = noise(xoff, yoff, zoff2);
 
@@ -79,6 +79,12 @@ class PatternSystem {
   void updateZ() {
     zoff = zoff + rateFlow;
     zoff2 = zoff2 + rateFlow2;
+    //syncBpm();
+  }
+    
+  void syncBpm() {
+    zoff *= map(millis()%(bpm*60000), 0, bpm*60000, 0, 1);
+    //zoff2 += (millis()/60000)%bpm;
   }
 
   void showFlowField() {

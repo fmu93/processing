@@ -1,4 +1,4 @@
-class LedSystem { //<>//
+class LedSystem { //<>// //<>//
 
   private HashMap<Integer, Led> ledMap;
   private int ledCount = 0;
