@@ -48,6 +48,7 @@ IntList ledsInside;
 float startFrame;
 
 public float bpm = 110;
+public float beatInterval = 1000; // millis between beats
 float lastBeat;
 int beats = 0;
 float tapSum = 0;
@@ -171,7 +172,7 @@ void draw() {
   text(ledSystem.ledCount(), 10, 10);
   text(frameRate, 50, 10);
   text("selMode: " + selMode, 110, 10);
-  text("bpm: " + int(bpm), 200, 10);
+  text("interv: " + int(beatInterval), 200, 10);
   float processTime = millis() - startFrame;
   text("millis/f: " + processTime, 300, 10);
 }
@@ -343,21 +344,23 @@ void keyPressed() {
       if (millis()-lastBeat < forgetTime) {
         tapSum += millis() - lastBeat;
         beats++;
-        if (beats > 4) {
+        if (beats > 3) {
+          beatInterval = beatInterval*0.5 + tapSum/beats*0.5;
           bpm = bpm*0.5 + 0.5*beats/tapSum*60000;
         }
-      } else {
-        tapSum = 0;
-        beats = 0;
-      }
-
-      lastBeat = millis();
+      // reset beats if after forgetTime
     } else {
-      inputBuffer += key;
+      tapSum = 0;
+      beats = 0;
     }
-  }
 
-  lastKey = key;
+    lastBeat = millis();
+  } else {
+    inputBuffer += key;
+  }
+}
+
+lastKey = key;
 }
 
 void keyReleased() {
