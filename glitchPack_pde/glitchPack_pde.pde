@@ -1,4 +1,4 @@
-import controlP5.*;  //<>// //<>// //<>//
+import controlP5.*;  //<>// //<>// //<>// //<>//
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Iterator;
@@ -46,6 +46,7 @@ float lastShowSelMode = millis();
 public float lastMode = millis();
 IntList ledsInside;
 float startFrame;
+int keysPressed = 0;
 
 public float bpm = 110;
 public float beatInterval = 1000; // millis between beats
@@ -299,6 +300,11 @@ void showSelMode() {
 }
 
 void keyPressed() {
+  // avoid taking the input of a held key
+  if (keysPressed >= 2 || (keysPressed >= 1 && key == lastKey)) return;
+  keysPressed++;
+  println(keysPressed);
+
   if (key == CODED) {
     switch(keyCode) {
     case UP:
@@ -345,27 +351,33 @@ void keyPressed() {
       if (millis()-lastBeat < forgetTime) {
         tapSum += millis() - lastBeat;
         beats++;
+        // reset after too many beats
+        if (beats > 10) {
+          tapSum = 0;
+          beats = 0;
+        } 
         if (beats > 3) {
           beatInterval = beatInterval*0.5 + tapSum/beats*0.5;
-          bpm = bpm*0.5 + 0.5*beats/tapSum*60000;
+          bpm = bpm*0.3 + 0.7*beats/tapSum*60000;
         }
-      // reset beats if after forgetTime
+        // reset beats if after forgetTime
+      } else {
+        tapSum = 0;
+        beats = 0;
+      }
+
+      lastBeat = millis();
     } else {
-      tapSum = 0;
-      beats = 0;
+      inputBuffer += key;
     }
-
-    lastBeat = millis();
-  } else {
-    inputBuffer += key;
   }
-}
 
-lastKey = key;
+  lastKey = key;
 }
 
 void keyReleased() {
   letterSystem.signalLetter(' ');
+  keysPressed = 0;
 }
 
 void doubleClicked() {
