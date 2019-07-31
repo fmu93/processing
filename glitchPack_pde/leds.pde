@@ -1,4 +1,4 @@
-class LedSystem { //<>// //<>// //<>//
+class LedSystem { //<>//
 
   private HashMap<Integer, Led> ledMap;
   private int ledCount = 0;
@@ -151,10 +151,6 @@ class LedSystem { //<>// //<>// //<>//
 
       float hue = patternSystem.updateLookup(entry.getValue().pos);
       float bri = patternSystem.brightnessLookup(entry.getValue().pos); 
-
-
-      //float syncFactor = constrain(shadowFlowFactor*map(sin(map(millis()%(beatInterval*2), 0, beatInterval*2, 0, TWO_PI)), -1, 1, 0.95, 1.05), 0, 1);
-      //float syncFactor = shadowFlowFactor;
 
       float briStart = map(shadowFlowFactor, 0, 1, 0, 0.5);
       float cutoff = map(shadowFlowFactor, 0, 1, briStart, 0.8);

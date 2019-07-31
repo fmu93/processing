@@ -1,4 +1,4 @@
-import controlP5.*;  //<>// //<>// //<>// //<>//
+import controlP5.*; //<>//
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Iterator;
@@ -48,8 +48,7 @@ IntList ledsInside;
 float startFrame;
 int keysPressed = 0;
 
-public float bpm = 110;
-public float beatInterval = 1000; // millis between beats
+public float beatInterval = 480; // millis between beats, 480 millis = 125 bpm
 float lastBeat;
 int beats = 0;
 float tapSum = 0;
@@ -352,13 +351,12 @@ void keyPressed() {
         tapSum += millis() - lastBeat;
         beats++;
         // reset after too many beats
-        if (beats > 10) {
-          tapSum = 0;
-          beats = 0;
+        if (beats >= 16) {
+          tapSum = millis() - lastBeat;
+          beats = 1;
         } 
         if (beats > 3) {
           beatInterval = beatInterval*0.5 + tapSum/beats*0.5;
-          bpm = bpm*0.3 + 0.7*beats/tapSum*60000;
         }
         // reset beats if after forgetTime
       } else {
