@@ -299,11 +299,6 @@ void showSelMode() {
 }
 
 void keyPressed() {
-  // avoid taking the input of a held key
-  if (keysPressed >= 2 || (keysPressed >= 1 && key == lastKey)) return;
-  keysPressed++;
-  println(keysPressed);
-
   if (key == CODED) {
     switch(keyCode) {
     case UP:
@@ -319,11 +314,15 @@ void keyPressed() {
       updateVariable(-1);
       break;
     case RIGHT:
-      updateVariable(1);
+      updateVariable(1);   
       break;
     case RETURN:
     }
   } else {
+    // avoid taking the input of a held key
+    if (keysPressed >= 2 || (keysPressed >= 1 && key == lastKey)) return;
+    keysPressed++;
+
     if ((key == ENTER || key == RETURN || key == '\n') && lastKey == ' ') {
       letterSystem.setQueue(inputBuffer);
       inputBuffer = "";
