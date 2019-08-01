@@ -1,6 +1,7 @@
 class LedSystem { //<>//
 
   private HashMap<Integer, Led> ledMap;
+  private int ledCount = 0;
 
   //ArrayList<Led> leds = new ArrayList<Led>();
   private ArrayList<Led> ledsToSignal = new ArrayList<Led>();
@@ -34,27 +35,40 @@ class LedSystem { //<>//
     }
   }
 
+  float getAverageBrightness() {
+    float sum = 0;
+    Iterator<Map.Entry<Integer, Led>> itr1 = ledMap.entrySet().iterator();
+    while (itr1.hasNext()) {
+      Map.Entry<Integer, Led> entry = itr1.next();
+      sum +=  entry.getValue().getBrightness();
+    }
+
+    return sum/ledCount;
+  }
+
   String toSocket() {
     String toReturn = ">" + ledMap.size() + "\n";
-    //colorMode(RGB, 1.0);
 
     Iterator<Map.Entry<Integer, Led>> itr1 = ledMap.entrySet().iterator();
     while (itr1.hasNext()) {
       Map.Entry<Integer, Led> entry = itr1.next();
-      toReturn += entry.getKey() + "," +entry.getValue().getHSB() + "\n"; // id,red,green,blue
+
+      toReturn += entry.getKey() + "," + entry.getValue().getHSB() + "\n"; // id,red,green,blue
+
     }
 
     toReturn += "< end <";
-    //colorMode(HSB, 1.0);
 
     return toReturn;
   }
 
   void rainbow() {
     Iterator<Map.Entry<Integer, Led>> itr1 = ledMap.entrySet().iterator();
+    float now = millis()/100;
     while (itr1.hasNext()) {
       Map.Entry<Integer, Led> entry = itr1.next();
-      entry.getValue().setColor(color(((entry.getKey()+millis()/1500)/60.0) % 1.0, 1, 1));
+      entry.getValue().setColor(color(((entry.getKey()+millis()/20.0)/300.0) % 1.0, 1, brightness*map((entry.getKey() +now) % 8, 0, 7, 1.3, 0.1)));
+
     }
   }
 
@@ -98,11 +112,24 @@ class LedSystem { //<>//
 
   void addLed(int id_, PVector pos_) {
     ledMap.put(id_, new Led(pos_, id_));
+    ledCount = ledMap.size();
   }
 
   void addLed(PVector pos_) {
-    ledMap.put(ledMap.size()+1, new Led(pos_, ledMap.size()+1));
-    println(ledMap.size());
+    int last = -1;
+
+    Iterator<Map.Entry<Integer, Led>> itr1 = ledMap.entrySet().iterator();
+    while (itr1.hasNext()) {
+      Map.Entry<Integer, Led> entry = itr1.next();
+      // the next LED id is skipping
+      if (entry.getKey() != last+1) {
+        break;
+      }
+
+      last = entry.getKey();
+    }
+
+    addLed(last+1, pos_);
   }
 
   IntList isInside(PVector point, float radius) { 
@@ -125,17 +152,38 @@ class LedSystem { //<>//
     while (itr1.hasNext()) {
       Map.Entry<Integer, Led> entry = itr1.next();
 
-
       float hue = patternSystem.updateLookup(entry.getValue().pos);
+      float bri = patternSystem.brightnessLookup(entry.getValue().pos); 
+      
+      // make color steps instead of smooth TODO
+      //float steps = 8.0;
+      //hue = floor(hue*steps)/steps;
+      //bri = floor(bri*steps)/steps;
 
-      color c = color(hue, saturation, brightness);
+      float briStart = map(shadowFlowFactor, 0, 1, 0, 0.5);
+      float cutoff = map(shadowFlowFactor, 0, 1, briStart, 0.8);
+
+      if (bri < cutoff) { // TODO balance algorithim 
+        //bri += 0.7;
+        //bri = brightness*(1-shadowFlowFactor*pow(bri, 3)); // somehow brightness doesn't look linear in the LEDs
+        bri = map(bri, briStart, cutoff, 0, 1);
+        bri = pow(bri, 1.5)*brightness;
+      } else {
+        //bri = map(bri, 0, 1, 0, brightness);
+        bri = brightness;
+      }
+
+      color c = color(hue, saturation, bri);
+      //c = evenBrightness(c, brightnessFactor);
 
       entry.getValue().setColor(c);
     }
+  }
 
-    if (ledMap.get(0) != null) println(ledMap.get(0).c);
-    patternSystem.updateZ();
-    patternSystem.evolveSpread();
+  color evenBrightness(color c, float factor) {
+    factor = map(factor, 0, brightness, 2, 1);
+
+    return color(hue(c), saturation(c), constrain(brightness(c)*factor, 0, 1));
   }
 
   IntList isInside(PVector point) {
@@ -171,14 +219,23 @@ class LedSystem { //<>//
       Map.Entry<Integer, Led> entry = itr1.next();
 
       entry.getValue().unSelect();
+
+    }
+  }
+
+  void clearColors() {
+    Iterator<Map.Entry<Integer, Led>> itr1 = ledMap.entrySet().iterator();
+    while (itr1.hasNext()) {
+      Map.Entry<Integer, Led> entry = itr1.next();
+
+      entry.getValue().setColor(color(0));
+
     }
   }
 
   void removeLed(int _id) {
     removeLed(ledMap.get(_id));
-    //if (ledMap.keySet().contains(_id)) {
-    //  ledMap.remove(ledMap.get(_id));
-    //}
+    ledCount = ledMap.size();
   }
 
 

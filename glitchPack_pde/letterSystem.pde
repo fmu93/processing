@@ -18,17 +18,15 @@ class LetterSystem {
   }
 
   void initPoems() {
-    poems.add("eddie happy birthday!!");
-    //poems.add("1234567890");
-    //poems.add(". ");
-    setQueue(poems.get(0));
+    //setQueue("ich bin eine maschine. wir leben, ihr menschen sterbt");
+    setQueue("hello fusion !");
+    setQueue("1234567890987654321[;,.'],.'.', + - * / */- * / - 0987654321");
   }
 
   void evolveQueue() {
-    if (frameCount % 1000 == 0 || loopCount >= loopMax) {
+    if (loopCount >= loopMax) {
       poemIndex = (poemIndex + 1) % poems.size();
-      setQueue(poems.get(poemIndex));
-
+      queue = poems.get(poemIndex);
       loopCount = 0;
     }
   }
@@ -36,36 +34,36 @@ class LetterSystem {
   void setQueue(String _queue) {
     if (_queue.length() > 0) {
       queue = _queue + "  ";
+      poems.add(queue);
+      poemIndex = poems.size();
       showIndex = 0;
-    } else {
-      endQueue();
+      loopCount = 0;
     }
-  }
-
-  void endQueue() {
-    queue = "";
   }
 
   void showQueue() {
-    evolveQueue();
 
-    // TODO double letters to flash twice
-    if (keyPressed) {
-      signalLetter(key);
-    } else if (queue.length() > 0 && millis() - last >= gapDelay) {
-      //signalLetter(queue.charAt(showIndex));
-      fadeLetter(queue.charAt(showIndex));
+    if (keyPressed && key != CODED && keyPressedCount > 0) {
+      signalLetter(key); // TODO fade letter and fade out after some time with manual input
+    } else if (lettersOn) {
+      evolveQueue();
 
-      if (millis() - last > signalDelay) {
-        showIndex = (showIndex + 1) % queue.length();
-        last = millis();
+      // TODO double letters to flash twice
+      if (queue.length() > 0 && millis() - last >= gapDelay) {
+        //signalLetter(queue.charAt(showIndex));
+        fadeLetter(queue.charAt(showIndex));
+
+        if (millis() - last > signalDelay) {
+          showIndex = (showIndex + 1) % queue.length();
+          last = millis();
+        }
       }
-    }
 
-    if (showIndex >= queue.length()-1) {
-      showIndex = 0;
-      loopCount++;
-      //last = 0;
+      if (showIndex >= queue.length()-1) {
+        showIndex = 0;
+        loopCount++;
+        //last = 0;
+      }
     }
   }
 
@@ -73,7 +71,10 @@ class LetterSystem {
     if (getLetterIds(_char) != null && getLetterIds(_char) != null) {
       for (int id : getLetterIds(_char)) {
         Led led = ledSystem.getLed(id);
-        if (led != null) led.fadeSignal();
+        if (led != null) {
+          if (!flowOn) led.setColor(color(patternSystem.updateLookup(led.pos), saturation, brightness));
+          led.fadeSignal();
+        }
       }
     }
   }
@@ -83,7 +84,10 @@ class LetterSystem {
     if (getLetterIds(_char) != null && getLetterIds(_char) != null) {
       for (int id : getLetterIds(_char)) {
         Led led = ledSystem.getLed(id);
-        if (led != null) led.setSignalColor();
+        if (led != null) {
+          if (!flowOn) led.setColor(color(patternSystem.updateLookup(led.pos), saturation, brightness));
+          led.setSignalColor();
+        }
       }
     }
   }

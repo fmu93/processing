@@ -1,2 +1,0 @@
-> Leds positions
-> Letter patterns

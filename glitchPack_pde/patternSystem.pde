@@ -1,18 +1,19 @@
 class PatternSystem {
 
-  ArrayList<Particle> particles = new ArrayList<Particle>();
+  //ArrayList<Particle> particles = new ArrayList<Particle>();
   PVector[] flowField;
   int maxCount = 200;
   float res;
   int cols;
   int rows;
   float zoff = random(100);
+  float zoff2 = random(100);
   float incSpread = 0.0002;
   boolean debug = false;
-  float[] colorSpread = {0, 1.9};  //[center, range/2]
+  float[] colorSpread = {1.7, 0.5};  //[center, range/2]
 
   PatternSystem() {
-    particles = new ArrayList<Particle>();
+    //particles = new ArrayList<Particle>();
     res = ledSize;
     //cols = floor(width/res*0.9);
     //rows = floor(height/res*0.9);
@@ -23,10 +24,10 @@ class PatternSystem {
     //colorSpread[0] = map(mouseX, 0, width, 0, TWO_PI);
     //colorSpread[1] = map(mouseY, 0, height, 0, 8);
 
-    colorSpread[0] = (colorSpread[0] + 0.0002) % 1.0;
+    colorSpread[0] = (colorSpread[0] + 0.0003) % 1.0;
     colorSpread[1] = (colorSpread[1] + incSpread);
     //colorSpread[1] = map(mouseY, 0, height, 0,4*PI);
-    if (colorSpread[1] < 0 || colorSpread[1] > 2) incSpread = incSpread*-1;
+    if (colorSpread[1] < 0 || colorSpread[1] > 1.8) incSpread = incSpread*-1;
     
   }
 
@@ -37,10 +38,19 @@ class PatternSystem {
 
     float minRange = colorSpread[0] - colorSpread[1];
     float maxRange = colorSpread[0] + colorSpread[1];
-    float theta = map(noise(xoff, yoff, zoff), 0, 1, minRange, maxRange);
+    float theta = map(noise(xoff, yoff, zoff), 0, 1, minRange, maxRange) % 1.0;
     return theta;
   }
 
+  float brightnessLookup(PVector _pos) {
+
+    float xoff = (_pos.x / res)*incFlow2;
+    float yoff = (_pos.y / res)*incFlow2;
+
+    float bri = noise(xoff, yoff, zoff2);
+
+    return bri;
+  }
 
   void updateFlowField() {
     evolveSpread();
@@ -67,7 +77,11 @@ class PatternSystem {
   }
   
   void updateZ() {
-    zoff = zoff + rateFlow;
+    float syncFactor1 = pow(sin(map(millis()%(beatInterval), 0, beatInterval, 0, PI)), 3);
+    float syncFactor2 = cos(map(millis()%(beatInterval), 0, beatInterval, PI, PI*3));
+
+    zoff = zoff + rateFlow*map(syncFactor2, -1, 1, 0.8, 1.25);
+    zoff2 = zoff2 + rateFlow2*map(syncFactor1, 0, 1, 0.75, 1.35);
   }
 
   void showFlowField() {
@@ -104,7 +118,7 @@ class PatternSystem {
     int index = (x+y*cols);
     return flowField[index];
   }
-
+/**
   void matrix() {
     if (particles.size() < maxCount && frameCount % 5 == 0) {
       Particle _part = new Particle(new PVector(random(width), 0));
@@ -133,4 +147,5 @@ class PatternSystem {
       }
     }
   }
+  **/
 }
