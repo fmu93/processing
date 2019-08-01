@@ -151,6 +151,11 @@ class LedSystem { //<>//
 
       float hue = patternSystem.updateLookup(entry.getValue().pos);
       float bri = patternSystem.brightnessLookup(entry.getValue().pos); 
+      
+      // make color steps instead of smooth TODO
+      //float steps = 8.0;
+      //hue = floor(hue*steps)/steps;
+      //bri = floor(bri*steps)/steps;
 
       float briStart = map(shadowFlowFactor, 0, 1, 0, 0.5);
       float cutoff = map(shadowFlowFactor, 0, 1, briStart, 0.8);
