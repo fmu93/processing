@@ -52,7 +52,9 @@ class LedSystem { //<>//
     Iterator<Map.Entry<Integer, Led>> itr1 = ledMap.entrySet().iterator();
     while (itr1.hasNext()) {
       Map.Entry<Integer, Led> entry = itr1.next();
+
       toReturn += entry.getKey() + "," + entry.getValue().getHSB() + "\n"; // id,red,green,blue
+
     }
 
     toReturn += "< end <";
@@ -66,6 +68,7 @@ class LedSystem { //<>//
     while (itr1.hasNext()) {
       Map.Entry<Integer, Led> entry = itr1.next();
       entry.getValue().setColor(color(((entry.getKey()+millis()/20.0)/300.0) % 1.0, 1, brightness*map((entry.getKey() +now) % 8, 0, 7, 1.3, 0.1)));
+
     }
   }
 
@@ -172,6 +175,7 @@ class LedSystem { //<>//
 
       color c = color(hue, saturation, bri);
       //c = evenBrightness(c, brightnessFactor);
+
       entry.getValue().setColor(c);
     }
   }
@@ -215,6 +219,7 @@ class LedSystem { //<>//
       Map.Entry<Integer, Led> entry = itr1.next();
 
       entry.getValue().unSelect();
+
     }
   }
 
@@ -224,6 +229,7 @@ class LedSystem { //<>//
       Map.Entry<Integer, Led> entry = itr1.next();
 
       entry.getValue().setColor(color(0));
+
     }
   }
 
