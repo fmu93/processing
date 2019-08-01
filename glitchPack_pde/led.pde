@@ -57,7 +57,7 @@ class Led {
   }
 
   void setSignalColor() {
-    c = color((hue(c)+0.3) % 1.0, saturation(c)-signalSaturation, brightness);
+    c = color((hue(c)+0.3) % 1.0, saturation(c)-(flowOn?1:0.5)*signalSaturation, brightness);
   }
 
   void setMildSignal() {
