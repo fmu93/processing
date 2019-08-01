@@ -45,11 +45,12 @@ int selMode = 0;
 float lastShowSelMode = millis();
 public float lastMode = millis();
 IntList ledsInside;
-float startFrame;
+public float now;
 public int keyPressedCount = 0;
 
 public float beatInterval = 480; // millis between beats, 480 millis = 125 bpm
-float lastBeat;
+public float lastBeat;
+public float lastBeatSync;
 int beats = 0;
 float tapSum = 0;
 int forgetTime = 3000; // 3 seconds 
@@ -106,7 +107,7 @@ void setup() {
 
 void draw() {
 
-  startFrame = millis();
+  now = millis();
   background(0.1);
 
   // load next mode at intervals TODO check performance adding frameCount % 200 == 0 &&
@@ -173,7 +174,7 @@ void draw() {
   text(frameRate, 50, 10);
   text("selMode: " + selMode, 110, 10);
   text("interv: " + int(beatInterval), 200, 10);
-  float processTime = millis() - startFrame;
+  float processTime = millis() - now;
   text("millis/f: " + processTime, 300, 10);
 }
 
@@ -199,6 +200,7 @@ void init() {
     loadSelected(new File("D:/Libraries/Documents/GitHub/processing/glitchPack_pde/zug.txt"));
   }
   lastBeat = millis();
+  lastBeatSync = lastBeat;
 }
 
 void updateVariable(float val) {
@@ -356,6 +358,7 @@ void keyPressed() {
         } 
         if (beats > 3) {
           beatInterval = beatInterval*0.5 + tapSum/beats*0.5;
+          lastBeatSync = millis();
         }
         // reset beats if after forgetTime
       } else {

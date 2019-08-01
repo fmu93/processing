@@ -101,7 +101,7 @@ class Mode {
     case 6:
       lettersOn = true;
       flowOn = true;
-      signalDelay = 230.0;
+      signalDelay = beatInterval;
       fadeDelay = 1.0;
       signalSaturation = 0.2;
       saturation = 1.0;

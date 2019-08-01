@@ -12,6 +12,10 @@ class PatternSystem {
   boolean debug = false;
   float[] colorSpread = {1.7, 0.5};  //[center, range/2]
 
+  int intensifySyncDuration = 20000; // 30 seconds, will fade out
+  float[] syncRange1 = {0.8, 1.25};
+  float[] syncRange2 = {0.8, 1.25};
+
   PatternSystem() {
     //particles = new ArrayList<Particle>();
     res = ledSize;
@@ -28,7 +32,6 @@ class PatternSystem {
     colorSpread[1] = (colorSpread[1] + incSpread);
     //colorSpread[1] = map(mouseY, 0, height, 0,4*PI);
     if (colorSpread[1] < 0 || colorSpread[1] > 1.8) incSpread = incSpread*-1;
-    
   }
 
   float updateLookup(PVector _pos) {
@@ -75,13 +78,35 @@ class PatternSystem {
     }
     zoff = zoff + rateFlow;
   }
-  
-  void updateZ() {
-    float syncFactor1 = pow(sin(map(millis()%(beatInterval), 0, beatInterval, 0, PI)), 3);
-    float syncFactor2 = cos(map(millis()%(beatInterval), 0, beatInterval, PI, PI*3));
 
-    zoff = zoff + rateFlow*map(syncFactor2, -1, 1, 0.8, 1.25);
-    zoff2 = zoff2 + rateFlow2*map(syncFactor1, 0, 1, 0.7, 1.35);
+  float[] syncInterval() {
+    float syncFactor1 = cos(map(millis()%(beatInterval), 0, beatInterval, PI, PI*3));
+    float syncFactor2 = pow(sin(map(millis()%(beatInterval), 0, beatInterval, 0, PI)), 3);
+    
+    float durationToLastBeat = now - lastBeatSync;
+
+    if (durationToLastBeat < intensifySyncDuration) {
+      syncFactor1 = map(syncFactor1, -1, 1, 
+      pow(syncRange1[0], map(durationToLastBeat, 0, intensifySyncDuration, 3, 0.5)), 
+      pow(syncRange1[1], map(durationToLastBeat, 0, intensifySyncDuration, 3, 0.5)));
+      syncFactor2 = map(syncFactor2, 0, 1, 
+      pow(syncRange2[0], map(durationToLastBeat, 0, intensifySyncDuration, 3, 0.5)), 
+      pow(syncRange2[1], map(durationToLastBeat, 0, intensifySyncDuration, 3, 0.5)));
+    } else {    
+      syncFactor1 = map(syncFactor1, -1, 1, syncRange1[0], syncRange1[1]);
+      syncFactor2 = map(syncFactor2, 0, 1, syncRange2[0], syncRange2[1]);
+    }
+
+    float[] syncFactors = {syncFactor1, syncFactor2};
+
+    return syncFactors;
+  }
+
+  void updateZ() {
+    float[] syncFactors = syncInterval();
+
+    zoff = zoff + rateFlow*syncFactors[0];
+    zoff2 = zoff2 + rateFlow2*syncFactors[1];
   }
 
   void showFlowField() {
@@ -118,34 +143,34 @@ class PatternSystem {
     int index = (x+y*cols);
     return flowField[index];
   }
-/**
-  void matrix() {
-    if (particles.size() < maxCount && frameCount % 5 == 0) {
-      Particle _part = new Particle(new PVector(random(width), 0));
-      _part.size = random(ledSize, ledSize*4);
-      _part.setColor(color(random(80, 140), 100, 100));
-      _part.maxSpeed *= random(0.8, 2);
-      particles.add(_part);
-    }
-
-    for (int i = particles.size()-1; i >= 0; i--) {
-      Particle part = particles.get(i);
-
-      if (part.pos.y > height) {
-        particles.remove(i);
-        continue;
-      } 
-
-      //part.seek(PVector.add(part.pos, new PVector(0, height)));
-      part.seek(new PVector(mouseX, mouseY));
-      part.setColor(color( ( (hue(part.c)+0.5) % 360), saturation(part.c), map(part.pos.y, 0, height, 120, 40)));
-      part.update();
-      for (int id : ledSystem.isInside(part.pos, part.size/2)) {
-        //ledSystem.getLed(id).show(part.c);
-        //ledSystem.getLed(id).setColor(part.c);
-        ledSystem.getLed(id).setSignalColor();
-      }
-    }
-  }
-  **/
+  /**
+   void matrix() {
+   if (particles.size() < maxCount && frameCount % 5 == 0) {
+   Particle _part = new Particle(new PVector(random(width), 0));
+   _part.size = random(ledSize, ledSize*4);
+   _part.setColor(color(random(80, 140), 100, 100));
+   _part.maxSpeed *= random(0.8, 2);
+   particles.add(_part);
+   }
+   
+   for (int i = particles.size()-1; i >= 0; i--) {
+   Particle part = particles.get(i);
+   
+   if (part.pos.y > height) {
+   particles.remove(i);
+   continue;
+   } 
+   
+   //part.seek(PVector.add(part.pos, new PVector(0, height)));
+   part.seek(new PVector(mouseX, mouseY));
+   part.setColor(color( ( (hue(part.c)+0.5) % 360), saturation(part.c), map(part.pos.y, 0, height, 120, 40)));
+   part.update();
+   for (int id : ledSystem.isInside(part.pos, part.size/2)) {
+   //ledSystem.getLed(id).show(part.c);
+   //ledSystem.getLed(id).setColor(part.c);
+   ledSystem.getLed(id).setSignalColor();
+   }
+   }
+   }
+   **/
 }
