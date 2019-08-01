@@ -77,8 +77,11 @@ class PatternSystem {
   }
   
   void updateZ() {
-    zoff = zoff + rateFlow*map(cos(map(millis()%(beatInterval), 0, beatInterval, PI, TWO_PI)), -1, 1, 0.8, 1.3);
-    zoff2 = zoff2 + rateFlow2*map(cos(map(millis()%(beatInterval*2), 0, beatInterval*2, PI, TWO_PI)), -1, 1, 0.8, 1.3);
+    float syncFactor1 = pow(sin(map(millis()%(beatInterval), 0, beatInterval, 0, PI)), 3);
+    float syncFactor2 = cos(map(millis()%(beatInterval), 0, beatInterval, PI, PI*3));
+
+    zoff = zoff + rateFlow*map(syncFactor2, -1, 1, 0.8, 1.25);
+    zoff2 = zoff2 + rateFlow2*map(syncFactor1, 0, 1, 0.75, 1.35);
   }
 
   void showFlowField() {

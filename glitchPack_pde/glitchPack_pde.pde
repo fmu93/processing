@@ -46,7 +46,7 @@ float lastShowSelMode = millis();
 public float lastMode = millis();
 IntList ledsInside;
 float startFrame;
-int keysPressed = 0;
+public int keyPressedCount = 0;
 
 public float beatInterval = 480; // millis between beats, 480 millis = 125 bpm
 float lastBeat;
@@ -320,8 +320,8 @@ void keyPressed() {
     }
   } else {
     // avoid taking the input of a held key
-    if (keysPressed >= 2 || (keysPressed >= 1 && key == lastKey)) return;
-    keysPressed++;
+    if (keyPressedCount >= 2 || (keyPressedCount >= 1 && key == lastKey)) return;
+    keyPressedCount++;
 
     if ((key == ENTER || key == RETURN || key == '\n') && lastKey == ' ') {
       letterSystem.setQueue(inputBuffer);
@@ -373,8 +373,7 @@ void keyPressed() {
 }
 
 void keyReleased() {
-  letterSystem.signalLetter(' ');
-  keysPressed = 0;
+  keyPressedCount = 0;
 }
 
 void doubleClicked() {

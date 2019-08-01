@@ -39,7 +39,7 @@ class Mode {
       rateFlow = 0.010999966;
       incFlow2 = 0.05549991;
       rateFlow2 = 0.08750001;
-      shadowFlowFactor = 1.2249995;
+      shadowFlowFactor = 1;
       break;
 
     case 2:
