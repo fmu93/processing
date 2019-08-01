@@ -81,7 +81,7 @@ class PatternSystem {
     float syncFactor2 = cos(map(millis()%(beatInterval), 0, beatInterval, PI, PI*3));
 
     zoff = zoff + rateFlow*map(syncFactor2, -1, 1, 0.8, 1.25);
-    zoff2 = zoff2 + rateFlow2*map(syncFactor1, 0, 1, 0.75, 1.35);
+    zoff2 = zoff2 + rateFlow2*map(syncFactor1, 0, 1, 0.7, 1.35);
   }
 
   void showFlowField() {

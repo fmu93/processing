@@ -130,10 +130,10 @@ void draw() {
     showSelMode();
   }
 
-  if (keyPressed && key == CODED) {
+  if (keyPressed && key == CODED && keyPressedCount > 0) {
     showSelMode();
     lastShowSelMode = millis();
-  } else if (keyPressed && key == ' ') {
+  } else if (keyPressed && key == ' ' && keyPressedCount > 0) {
     ledSystem.rainbow();
   } else {
   }
@@ -319,7 +319,7 @@ void keyPressed() {
     case RETURN:
     }
   } else {
-    // avoid taking the input of a held key
+    // avoid taking the continuous input of a held key
     if (keyPressedCount >= 2 || (keyPressedCount >= 1 && key == lastKey)) return;
     keyPressedCount++;
 
