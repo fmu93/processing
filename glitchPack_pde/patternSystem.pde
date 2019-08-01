@@ -12,7 +12,7 @@ class PatternSystem {
   boolean debug = false;
   float[] colorSpread = {1.7, 0.5};  //[center, range/2]
 
-  int intensifySyncDuration = 20000; // 30 seconds, will fade out
+  int intensifySyncDuration = 15000; // will fade out
   float[] syncRange1 = {0.8, 1.25};
   float[] syncRange2 = {0.8, 1.25};
 
@@ -87,11 +87,11 @@ class PatternSystem {
 
     if (durationToLastBeat < intensifySyncDuration) {
       syncFactor1 = map(syncFactor1, -1, 1, 
-      pow(syncRange1[0], map(durationToLastBeat, 0, intensifySyncDuration, 3, 0.5)), 
-      pow(syncRange1[1], map(durationToLastBeat, 0, intensifySyncDuration, 3, 0.5)));
+      pow(syncRange1[0], map(durationToLastBeat, 0, intensifySyncDuration, 3, 0.8)), 
+      pow(syncRange1[1], map(durationToLastBeat, 0, intensifySyncDuration, 3, 0.8)));
       syncFactor2 = map(syncFactor2, 0, 1, 
-      pow(syncRange2[0], map(durationToLastBeat, 0, intensifySyncDuration, 3, 0.5)), 
-      pow(syncRange2[1], map(durationToLastBeat, 0, intensifySyncDuration, 3, 0.5)));
+      pow(syncRange2[0], map(durationToLastBeat, 0, intensifySyncDuration, 3, 0.8)), 
+      pow(syncRange2[1], map(durationToLastBeat, 0, intensifySyncDuration, 3, 0.8)));
     } else {    
       syncFactor1 = map(syncFactor1, -1, 1, syncRange1[0], syncRange1[1]);
       syncFactor2 = map(syncFactor2, 0, 1, syncRange2[0], syncRange2[1]);

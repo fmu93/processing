@@ -115,10 +115,13 @@ void draw() {
     mode.nextMode();
   }
 
-  if (flowOn) {
-    ledSystem.updateFlowField();
+  if (flowOn || keyPressed) {    
     patternSystem.updateZ();
     patternSystem.evolveSpread();
+  }
+
+  if (flowOn) {
+    ledSystem.updateFlowField();
   } else {
     ledSystem.clearColors();
   }
