@@ -13,12 +13,12 @@ public static PatternSystem patternSystem;
 public static Mode mode;
 
 boolean makingLEDs = false;
-static boolean editing = false;
+static boolean editing = true;
 PVector stripStart;
 PVector stripEnd;
 String inputBuffer = "";
 char lastKey = 'a';
-int[] selModeLeds = {103, 271, 270, 269, 268, 267, 266, 265, 264};
+int[] selModeLeds = {103, 270, 269, 268, 267, 266, 265, 264};
 
 public static int ledSize = 20;
 public static float showSelModeDelay = 3000;
@@ -134,7 +134,7 @@ void draw() {
     showSelMode();
   }
 
-  if (keyPressed && key == CODED && keyPressedCount > 0) {
+  if (keyPressed && key == CODED) {
     showSelMode();
     lastShowSelMode = millis();
   } else if (keyPressed && key == ' ' && keyPressedCount > 0) {
